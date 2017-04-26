@@ -7,6 +7,9 @@
 #include "Chess.h"
 #include "Prompts.h"
 
+using std::cout;
+using std::endl;
+
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end) {
     // Possibly implement chess-specific move logic here
@@ -30,6 +33,30 @@ void ChessGame::setupBoard() {
         initPiece(PAWN_ENUM, BLACK, Position(i, 6));
     }
 }
+
+//print the chess board
+void Board::printBoard() {
+  for (int i = m_height - 1; i >= 0; i--) {
+    for (int j=0; j < m_width; j++) {
+      if (m_pieces.at((i*m_width) + j) != NULL) {
+	cout << m_pieces[(i*m_width) + j]->owner() << m_pieces[(i*m_width) + j]->id();
+	cout << " ";
+    }
+      else {
+	cout << "__ ";
+      }
+  }
+    cout << endl;
+  }
+}
+
+/*
+int ChessGame::run() {
+  printBoard();
+  return 0;
+}
+*/
+
 
 int main() {
     ChessGame chess;

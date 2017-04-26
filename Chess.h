@@ -117,7 +117,7 @@ public:
     }
 
     // Setup the chess board with its initial pieces
-    virtual void setupBoard();
+    virtual void setupBoard() override;
 
     // Whether the chess game is over
     virtual bool gameOver() const override { return false; }
@@ -126,6 +126,11 @@ public:
     // The method returns an integer with the status
     // >= 0 is SUCCESS, < 0 is failure
     virtual int makeMove(Position start, Position end) override;
+
+    //print the chess game board
+    //virtual void printBoard() override;
+
+    //virtual int run() override;
 };
 
 #endif

@@ -76,14 +76,24 @@ public:
         return 0;
     }
 
+    //Print out the board
+    virtual void printBoard();
+
+    virtual void setupBoard() {}
     // The main gameplay loop. Ideally, you should be able to implement
     // all of the gameplay loop logic here in the Board class rather than
     // overriding this method in the specialized Game-specific class
-    virtual void run() {}
+    virtual void run() {
+      setupBoard();
+      printBoard();
+    }
 
     // Returns "true" if the game is over
     virtual bool gameOver() const = 0 ;
 
+    
+    
+    
 protected:
     // All the factories registered with this Board
     PieceGenMap m_registeredFactories;
