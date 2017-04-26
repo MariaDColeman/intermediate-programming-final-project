@@ -79,11 +79,13 @@ Piece* Board::newPiece(int id, Player owner) {
 }
 
 int Board::makeMove(Position start, Position end) {
-  if (!(validPosition(start) && validPosition(end)) {
+  if (!(validPosition(start) && validPosition(end))) {
       return -7;
   }
-    else if (m_pieces[start] == NULL) {
+  else if (m_pieces.at(index(start)) == NULL) {
       return -6;
     }
-  
+  else {
+    return 1;
+  }
 }

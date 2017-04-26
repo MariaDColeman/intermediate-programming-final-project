@@ -42,13 +42,14 @@ enum PieceEnum {
 };
 
 class ChessPiece : public Piece {
-  
-}
+ protected:
+ ChessPiece(Player owner, int id) : Piece(owner, id) {}
+};
 
 class Pawn : public ChessPiece {
 protected:
     friend PieceFactory<Pawn>;
-    Pawn(Player owner, int id) : Piece(owner, id) {}
+    Pawn(Player owner, int id) : ChessPiece(owner, id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
@@ -60,7 +61,7 @@ public:
 class Rook : public ChessPiece {
 protected:
     friend PieceFactory<Rook>;
-    Rook(Player owner, int id) : Piece(owner, id) {}
+    Rook(Player owner, int id) : ChessPiece(owner, id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
@@ -70,7 +71,7 @@ public:
 class Knight : public ChessPiece {
 protected:
     friend PieceFactory<Knight>;
-    Knight(Player owner, int id) : Piece(owner, id) {}
+    Knight(Player owner, int id) : ChessPiece(owner, id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
@@ -80,7 +81,7 @@ public:
 class Bishop : public ChessPiece {
 protected:
     friend PieceFactory<Bishop>;
-    Bishop(Player owner, int id) : Piece(owner, id) {}
+    Bishop(Player owner, int id) : ChessPiece(owner, id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
@@ -90,7 +91,7 @@ public:
 class Queen : public ChessPiece {
 protected:
     friend PieceFactory<Queen>;
-    Queen(Player owner, int id) : Piece(owner , id) {}
+    Queen(Player owner, int id) : ChessPiece(owner , id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
@@ -100,7 +101,7 @@ public:
 class King : public ChessPiece {
 protected:
     friend PieceFactory<King>;
-    King(Player owner, int id) : Piece(owner, id) {}
+    King(Player owner, int id) : ChessPiece(owner, id) {}
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic

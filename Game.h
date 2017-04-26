@@ -70,12 +70,11 @@ public:
     // The method returns an integer with the status
     // >= 0 is SUCCESS, < 0 is failure
     // [Do not modify the type of this method]
-    virtual int makeMove(Position start, Position end) {
+    virtual int makeMove(Position start, Position end);
         // This method may handle the parts of moving pieces that
         // generalize over different board games
  
-      return 0;
-    }
+
 
     //Print out the board
     virtual void printBoard();
@@ -86,6 +85,9 @@ public:
     // overriding this method in the specialized Game-specific class
     virtual void run() {
       setupBoard();
+      struct Position a = Position(0,0);
+      struct Position b = Position(3,4);
+      makeMove(a,b);
       printBoard();
     }
 

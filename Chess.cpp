@@ -16,7 +16,12 @@ int ChessGame::makeMove(Position start, Position end) {
     //
     // We call Board's makeMove to handle any general move logic
     // Feel free to use this or change it as you see fit
-    int retCode = Board::makeMove(start, end);
+  
+  int retCode = Board::makeMove(start, end);
+    if (retCode==1) {
+      m_pieces.at(index(end)) = m_pieces.at(index(start));
+      m_pieces.at(index(start)) = NULL;
+    }
     return retCode;
 }
 
