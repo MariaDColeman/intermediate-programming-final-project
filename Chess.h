@@ -41,7 +41,11 @@ enum PieceEnum {
     KING_ENUM
 };
 
-class Pawn : public Piece {
+class ChessPiece : public Piece {
+  
+}
+
+class Pawn : public ChessPiece {
 protected:
     friend PieceFactory<Pawn>;
     Pawn(Player owner, int id) : Piece(owner, id) {}
@@ -53,7 +57,7 @@ public:
         return SUCCESS;
     }
 };
-class Rook : public Piece {
+class Rook : public ChessPiece {
 protected:
     friend PieceFactory<Rook>;
     Rook(Player owner, int id) : Piece(owner, id) {}
@@ -63,7 +67,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override { return SUCCESS; }
 };
-class Knight : public Piece {
+class Knight : public ChessPiece {
 protected:
     friend PieceFactory<Knight>;
     Knight(Player owner, int id) : Piece(owner, id) {}
@@ -73,7 +77,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override { return SUCCESS; }
 };
-class Bishop : public Piece {
+class Bishop : public ChessPiece {
 protected:
     friend PieceFactory<Bishop>;
     Bishop(Player owner, int id) : Piece(owner, id) {}
@@ -83,7 +87,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override { return SUCCESS; }
 };
-class Queen : public Piece {
+class Queen : public ChessPiece {
 protected:
     friend PieceFactory<Queen>;
     Queen(Player owner, int id) : Piece(owner , id) {}
@@ -93,7 +97,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override { return SUCCESS; }
 };
-class King : public Piece {
+class King : public ChessPiece {
 protected:
     friend PieceFactory<King>;
     King(Player owner, int id) : Piece(owner, id) {}

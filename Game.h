@@ -73,7 +73,8 @@ public:
     virtual int makeMove(Position start, Position end) {
         // This method may handle the parts of moving pieces that
         // generalize over different board games
-        return 0;
+ 
+      return 0;
     }
 
     //Print out the board
