@@ -5,6 +5,10 @@
 #include "Game.h"
 #include "Prompts.h"
 
+using std::cin;
+using std::cout;
+using std::endl;
+
 ///////////////
 // Board //
 ///////////////
@@ -80,12 +84,62 @@ Piece* Board::newPiece(int id, Player owner) {
 
 int Board::makeMove(Position start, Position end) {
   if (!(validPosition(start) && validPosition(end))) {
-      return -7;
+    Prompts::outOfBounds();
+    return -7;
   }
   else if (m_pieces.at(index(start)) == NULL) {
-      return -6;
+    Prompts::noPiece();
+    return -6;
     }
   else {
     return 1;
   }
+}
+
+void Board::run() {
+
+  int initialInput;
+  do {
+  Prompts::menu();
+  cin >> initialInput;
+  if (initialInput == 1) {
+    this->setupBoard();
+    m_turn = 1;
+  }
+  else if (initialInput == 2) {
+      Prompts::loadGame();
+      
+      //ChessGame::setUpSavedBoard();
+  }
+  } while ((initialInput != 1)&&(initialInput !=2));
+
+
+  //   while (!gameOver()) {
+      if ((m_turn%2)==1) {
+	Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
+      }
+      else {
+	Prompts::playerPrompt(BLACK, ((m_turn)/2));
+      }
+
+      Position start;
+      Position end;
+      char startx;
+      char starty;
+      char endx;
+      char endy;
+      cin >> startx;
+      cout << startx << endl;
+      cin >> starty;
+      cout << starty << endl;
+      cin >> endx;
+      cout << endx << endl;
+      cin >> endy;
+      cout << endy << endl;
+
+      
+      m_turn++;
+      
+      // }
+  
 }

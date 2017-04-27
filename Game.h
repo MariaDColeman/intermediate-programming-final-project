@@ -83,13 +83,15 @@ public:
     // The main gameplay loop. Ideally, you should be able to implement
     // all of the gameplay loop logic here in the Board class rather than
     // overriding this method in the specialized Game-specific class
-    virtual void run() {
+    virtual void run(); 
+      /*
       setupBoard();
-      struct Position a = Position(0,0);
+      struct Position a = Position(0,1);
       struct Position b = Position(3,4);
       makeMove(a,b);
       printBoard();
-    }
+      */
+  
 
     // Returns "true" if the game is over
     virtual bool gameOver() const = 0 ;

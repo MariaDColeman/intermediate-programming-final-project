@@ -44,6 +44,32 @@ enum PieceEnum {
 class ChessPiece : public Piece {
  protected:
  ChessPiece(Player owner, int id) : Piece(owner, id) {}
+
+ public:
+  //peopleInWay() ? function that goes throough desired path to see if anything is in the path . for all excep knight
+  //returns a 2 if no people are in the way. returns a -2 if there are people in the way
+  //virtual int noPeopleInWay(Position start, Position end, const Board& board); 
+ int properAloneMove(Position start, Position end) const;
+  
+  virtual int validMove(Position start, Position end, const Board& board) const override {
+    //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
+    //getDirection()
+    //noPeopleInWay()?
+    properAloneMove(start,end);
+    
+  }
+
+  char getDirection(Position start, Position end) const;
+  int getSpaces(Position start, Position end) const;
+  
+  virtual int properDirection(char dir) const {return 0;}
+  virtual int properSpaces(Position start, Position end) const {return 0;}
+
+ 
+
+
+
+  
 };
 
 class Pawn : public ChessPiece {
@@ -57,6 +83,13 @@ public:
         const Board& board) const override {
         return SUCCESS;
     }
+    virtual int properDirection(char dir) {
+      return (dir == 'V');
+    }
+    virtual int properSpaces(Position start, Position end) {
+      //MAKE SURE TO COME BACK AND DEAL WITH FIRST MOVE
+      return (getSpaces(start, end) == 1);
+    }
 };
 class Rook : public ChessPiece {
 protected:
@@ -69,6 +102,7 @@ public:
         const Board& board) const override { return SUCCESS; }
 };
 class Knight : public ChessPiece {
+  //remember to return a 2 for noPeopleInWay() since it doesn't matter
 protected:
     friend PieceFactory<Knight>;
     Knight(Player owner, int id) : ChessPiece(owner, id) {}

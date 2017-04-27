@@ -10,6 +10,109 @@
 using std::cout;
 using std::endl;
 
+
+int ChessPiece::properAloneMove(Position start, Position end) const {
+  if(!((properDirection(getDirection(start,end)) && (properSpaces(start, end))))) {
+    Prompts::illegalMove();
+    return MOVE_ERROR_ILLEGAL;
+  }
+  else {
+    return SUCCESS;
+  }
+}
+
+char ChessPiece::getDirection(Position start, Position end) const{
+
+  if (start.x == end.x) {
+    return 'H';
+  }
+
+  if (start.y == end.y) {
+    return 'V';
+  }
+
+  if ((end.x - start.x) == (end.y - start.y)) {
+    return '/';
+  }
+
+  if ((end.x - start.x) == -(end.y - start.y)) {
+    return '\\';
+  }
+
+  if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 13) {
+    return 'L';
+  }
+
+  else {
+    return '0';
+  }
+}
+
+int ChessPiece::getSpaces(Position start, Position end) const{
+
+  if (start.x == end.x) {
+    return (end.y - start.y);
+  }
+
+  if (start.y == end.y) {
+    return (end.x - start.x);
+  }
+
+  if ((end.x - start.x) == (end.y - start.y)) {
+    return (end.x - start.x);
+  }
+
+  if ((end.x - start.x) == -(end.y - start.y)) {
+    return (end.y - start.y);
+  }
+
+		       
+}
+
+/*
+int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board, char directionCode, char backwards) {
+  //char directionCode;
+  //int backwards = 0; //0 if not backwards(to the right, up, up-right, up-left)
+  Position tempStart = start;
+  Position tempEnd = end;
+
+  
+  
+  if ((start.x)-(end.x) > 0) {
+    backwards = 1;
+  }
+
+  if (backwards) {
+    tempStart = end;
+    tempEnd = start;
+  }
+  
+  for (int i = tempStart //to tempEnd
+
+
+
+	 if ((directionCode == 'H') || (directionCode == 'V')) {
+	 for (int y = start.y; y < end.y ; y++) {
+	   for (int x = start.x; x < (end.x ); x++ ) {
+	     //is it not empty
+	     ++x
+	     if
+	   }
+	   //check ++y's
+	 }
+	 }
+
+	 else (
+
+	 
+  //if there are people in the way, return a -2;
+  return -2;
+  
+  //if no people in way, return a 2
+  return 2;
+}
+*/
+
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end) {
     // Possibly implement chess-specific move logic here
@@ -19,10 +122,12 @@ int ChessGame::makeMove(Position start, Position end) {
   
   int retCode = Board::makeMove(start, end);
     if (retCode==1) {
+      if ((m_pieces.at(index(start)))->validMove(start, end, *this) >= 0) {
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
     }
-    return retCode;
+    }
+    return 0;
 }
 
 // Setup the chess board with its initial pieces
