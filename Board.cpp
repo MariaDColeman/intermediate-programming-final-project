@@ -147,6 +147,7 @@ void Board::run() {
 	start = Position(startx - 97, starty - 49);
         end = Position(endx - 97, endy - 49);
 
+	
         cout << start.x << " " << start.y <<endl;// error checking
         cout << end.x << " " << end.y <<endl;//
 
