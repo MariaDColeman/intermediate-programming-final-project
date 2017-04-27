@@ -97,14 +97,14 @@ int Board::makeMove(Position start, Position end) {
 }
 
 void Board::run() {
-
   int initialInput;
+  
   do {
-  Prompts::menu();
-  cin >> initialInput;
+      Prompts::menu();
+      cin >> initialInput;
   if (initialInput == 1) {
-    this->setupBoard();
-    m_turn = 1;
+      this->setupBoard();
+      m_turn = 1;
   }
   else if (initialInput == 2) {
       Prompts::loadGame();
@@ -115,31 +115,51 @@ void Board::run() {
 
 
   //   while (!gameOver()) {
-      if ((m_turn%2)==1) {
-	Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
-      }
-      else {
-	Prompts::playerPrompt(BLACK, ((m_turn)/2));
-      }
-
+  for (int round = 0; round < 5; round++) {  //allows for 5 rounds
       Position start;
       Position end;
+      int currPlayer;
+      int correctPlayer;
       char startx;
       char starty;
       char endx;
       char endy;
-      cin >> startx;
-      cout << startx << endl;
-      cin >> starty;
-      cout << starty << endl;
-      cin >> endx;
-      cout << endx << endl;
-      cin >> endy;
-      cout << endy << endl;
+    
+    do {
+        if ((m_turn%2)==1) {
+	Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
+	currPlayer = WHITE;
+        }
+        else {
+	Prompts::playerPrompt(BLACK, ((m_turn)/2));
+	currPlayer = BLACK;
+        }
 
+        printBoard();
+
+        cin >> startx;
+        cin >> starty;
+        cin >> endx;
+        cin >> endy;
+
+	startx = tolower(startx);
+        endx = tolower(endx);
+	start = Position(startx - 97, starty - 49);
+        end = Position(endx - 97, endy - 49);
+
+        cout << start.x << " " << start.y <<endl;// error checking
+        cout << end.x << " " << end.y <<endl;//
+
+        correctPlayer = (m_pieces.at(index(start))->owner() == currPlayer);
+
+	if (!correctPlayer) {
+	  Prompts::noPiece();
+	}
+   } while (!correctPlayer);
+        makeMove(start, end);
+
+        m_turn++;
       
-      m_turn++;
-      
-      // }
+   }
   
 }
