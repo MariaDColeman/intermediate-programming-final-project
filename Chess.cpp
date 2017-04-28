@@ -54,19 +54,19 @@ char ChessPiece::getDirection(Position start, Position end) const{
 int ChessPiece::getSpaces(Position start, Position end) const{
 
   if (start.x == end.x) {
-    return abs((int)end.y - (int)start.y);
+    return (int)end.y - (int)start.y;
   }
 
   if (start.y == end.y) {
-    return abs((int)end.x - (int)start.x);
+    return (int)end.x - (int)start.x;
   }
 
   if ((end.x - start.x) == (end.y - start.y)) {
-    return abs((int)end.x - (int)start.x);
+    return (int)end.x - (int)start.x;
   }
 
   if ((end.x - start.x) == -(end.y - start.y)) {
-    return abs((int)end.y - (int)start.y);
+    return (int)end.y - (int)start.y;
   }
 
   if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 5) {
@@ -77,16 +77,19 @@ int ChessPiece::getSpaces(Position start, Position end) const{
 		       
 }
 
-/*
-int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board, char directionCode, char backwards) {
+
+int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board)const  {
   //char directionCode;
   //int backwards = 0; //0 if not backwards(to the right, up, up-right, up-left)
   Position tempStart = start;
   Position tempEnd = end;
-
   
+  char dir = getDirection(start, end);
+  int spaces = getSpaces(start, end);
+  int backwards;
   
-  if ((start.x)-(end.x) > 0) {
+  if (spaces < 0) {
+    //going in the negative x or the negative y
     backwards = 1;
   }
 
@@ -94,32 +97,19 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board, 
     tempStart = end;
     tempEnd = start;
   }
-  
-  for (int i = tempStart //to tempEnd
 
+  if (dir == 'H') {
+    for (int i = tempStart.x + 1; i < tempEnd.x; i++ ) {
+      if (board.m_pieces.at(tempStart.y * m_width + i) != NULL) {
+	Prompts::blocked();
+	return MOVE_ERROR_BLOCKED;
+      }
+    }
+  }
 
-
-	 if ((directionCode == 'H') || (directionCode == 'V')) {
-	 for (int y = start.y; y < end.y ; y++) {
-	   for (int x = start.x; x < (end.x ); x++ ) {
-	     //is it not empty
-	     ++x
-	     if
-	   }
-	   //check ++y's
-	 }
-	 }
-
-	 else (
-
-	 
-  //if there are people in the way, return a -2;
-  return -2;
-  
-  //if no people in way, return a 2
-  return 2;
+  return SUCCESS;
 }
-*/
+
 
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end){

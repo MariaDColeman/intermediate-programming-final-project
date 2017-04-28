@@ -2,9 +2,12 @@
 #define CHESS_H
 
 #include "Game.h"
+#include <cmath>
 
 using std::cout;
 using std::endl;
+using std::abs;
+
 // Game status codes
 // -----------------
 // These enumerations are optional. You can choose to use them,
@@ -52,12 +55,14 @@ class ChessPiece : public Piece {
   //returns a 2 if no people are in the way. returns a -2 if there are people in the way
   //virtual int noPeopleInWay(Position start, Position end, const Board& board); 
  int properAloneMove(Position start, Position end) const;
-  
+ int noPeopleInWay(Position start, Position end, const Board& board) const;
   virtual int validMove(Position start, Position end, const Board& board) const override {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
     //noPeopleInWay()?
-    properAloneMove(start,end);
+    if (properAloneMove(start,end)) {
+      noPeopleInWay(start, end, board);
+    }
     
   }
 
@@ -66,10 +71,6 @@ class ChessPiece : public Piece {
   
   virtual int properDirection(char dir) const {return 0;}
   virtual int properSpaces(Position start, Position end) const {return 0;}
-
- 
-
-
 
   
 };
@@ -91,8 +92,12 @@ public:
     }
     virtual int properSpaces(Position start, Position end) const override{
       //MAKE SURE TO COME BACK AND DEAL WITH FIRST MOVE
-     
-      return (getSpaces(start, end) == 1);
+      
+      if (m_owner == BLACK) {
+	return (getSpaces(start, end) == -1);
+      } else {
+	return (getSpaces(start, end) == 1);
+      }
     }
 };
 
