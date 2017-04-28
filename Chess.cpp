@@ -3,16 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cmath>
 #include "Game.h"
 #include "Chess.h"
 #include "Prompts.h"
 
 using std::cout;
 using std::endl;
-
+using std::abs;
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
   if(!((properDirection(getDirection(start,end)) && (properSpaces(start, end))))) {
+    //cout << getDirection(start,end) << endl;
+    //cout << getSpaces(start,end) << endl;
     Prompts::illegalMove();
     return MOVE_ERROR_ILLEGAL;
   }
@@ -24,11 +27,11 @@ int ChessPiece::properAloneMove(Position start, Position end) const {
 char ChessPiece::getDirection(Position start, Position end) const{
 
   if (start.x == end.x) {
-    return 'H';
+    return 'V';
   }
 
   if (start.y == end.y) {
-    return 'V';
+    return 'H';
   }
 
   if ((end.x - start.x) == (end.y - start.y)) {
@@ -51,19 +54,19 @@ char ChessPiece::getDirection(Position start, Position end) const{
 int ChessPiece::getSpaces(Position start, Position end) const{
 
   if (start.x == end.x) {
-    return (end.y - start.y);
+    return abs((int)end.y - (int)start.y);
   }
 
   if (start.y == end.y) {
-    return (end.x - start.x);
+    return abs((int)end.x - (int)start.x);
   }
 
   if ((end.x - start.x) == (end.y - start.y)) {
-    return (end.x - start.x);
+    return ((int)end.x - (int)start.x);
   }
 
   if ((end.x - start.x) == -(end.y - start.y)) {
-    return (end.y - start.y);
+    return ((int)end.y - (int)start.y);
   }
 
 		       
@@ -114,20 +117,24 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board, 
 */
 
 // Make a move on the board. Return an int, with < 0 being failure
-int ChessGame::makeMove(Position start, Position end) {
+int ChessGame::makeMove(Position start, Position end){
     // Possibly implement chess-specific move logic here
     //
     // We call Board's makeMove to handle any general move logic
     // Feel free to use this or change it as you see fit
   
   int retCode = Board::makeMove(start, end);
-    if (retCode==1) {
+ 
+  if (retCode==1) {
       if ((m_pieces.at(index(start)))->validMove(start, end, *this) >= 0) {
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
     }
-    }
-    return 0;
+      return 0;   
+  }
+  else {
+    return -1;
+  }
 }
 
 // Setup the chess board with its initial pieces

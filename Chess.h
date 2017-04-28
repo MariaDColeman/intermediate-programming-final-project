@@ -3,6 +3,8 @@
 
 #include "Game.h"
 
+using std::cout;
+using std::endl;
 // Game status codes
 // -----------------
 // These enumerations are optional. You can choose to use them,
@@ -81,13 +83,15 @@ public:
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
         const Board& board) const override {
-        return SUCCESS;
+      return ChessPiece::validMove(start, end, board);
+      //return SUCCESS;
     }
-    virtual int properDirection(char dir) {
+    virtual int properDirection(char dir) const override {
       return (dir == 'V');
     }
-    virtual int properSpaces(Position start, Position end) {
+    virtual int properSpaces(Position start, Position end) const override{
       //MAKE SURE TO COME BACK AND DEAL WITH FIRST MOVE
+     
       return (getSpaces(start, end) == 1);
     }
 };
@@ -99,7 +103,7 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override { return SUCCESS; }
+        const Board& board) const override {return SUCCESS; }
 };
 class Knight : public ChessPiece {
   //remember to return a 2 for noPeopleInWay() since it doesn't matter

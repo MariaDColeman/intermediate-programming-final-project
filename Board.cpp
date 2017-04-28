@@ -83,11 +83,12 @@ Piece* Board::newPiece(int id, Player owner) {
 }
 
 int Board::makeMove(Position start, Position end) {
+  
   if (!(validPosition(start) && validPosition(end))) {
     Prompts::outOfBounds();
     return -7;
   }
-  else if (m_pieces.at(index(start)) == NULL) {
+  else if ((m_pieces.at(index(start)) == NULL) ||(m_pieces.at(index(start))->owner() != playerTurn())) {
     Prompts::noPiece();
     return -6;
     }
@@ -114,10 +115,13 @@ void Board::run() {
   } while ((initialInput != 1)&&(initialInput !=2));
 
 
+ 
+ 
+  
   //   while (!gameOver()) {
   for (int round = 0; round < 5; round++) {  //allows for 5 rounds
-      Position start;
-      Position end;
+    Position start;
+    Position end;
       int currPlayer;
       int correctPlayer;
       char startx;
@@ -127,13 +131,13 @@ void Board::run() {
     
     do {
         if ((m_turn%2)==1) {
-	Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
-	currPlayer = WHITE;
-        }
+	  cout << endl;
+	  Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
+	}
         else {
+	  cout << endl;
 	Prompts::playerPrompt(BLACK, ((m_turn)/2));
-	currPlayer = BLACK;
-        }
+	}
 
         printBoard();
 
@@ -144,20 +148,20 @@ void Board::run() {
 
 	startx = tolower(startx);
         endx = tolower(endx);
-	start = Position(startx - 97, starty - 49);
-        end = Position(endx - 97, endy - 49);
-
+	//Position start(startx - 97, starty - 49);
+        //Position end(endx - 97, endy - 49);
+	start.x = startx-97;
+	start.y = starty-49;
+	end.x = endx-97;
+	end.y = endy-49;
 	
-        cout << start.x << " " << start.y <<endl;// error checking
-        cout << end.x << " " << end.y <<endl;//
+	//        cout << start.x << " " << start.y <<endl;// error checking
+	//        cout << end.x << " " << end.y <<endl;//
 
-        correctPlayer = (m_pieces.at(index(start))->owner() == currPlayer);
-
-	if (!correctPlayer) {
-	  Prompts::noPiece();
-	}
-   } while (!correctPlayer);
-        makeMove(start, end);
+	//cout << makeMove(start,end) << endl;
+    } while (makeMove(start, end) < 0);
+   
+  
 
         m_turn++;
       
