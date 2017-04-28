@@ -95,6 +95,7 @@ public:
       return (getSpaces(start, end) == 1);
     }
 };
+
 class Rook : public ChessPiece {
 protected:
     friend PieceFactory<Rook>;
@@ -103,8 +104,16 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override {return SUCCESS; }
+		  const Board& board) const override {return ChessPiece::validMove(start, end, board); }
+    virtual int properDirection(char dir) const override {
+      return ((dir == 'V')||(dir == 'H'));
+    }
+    virtual int properSpaces(Position start, Position end) const override{
+      return 1;
+    }
 };
+
+
 class Knight : public ChessPiece {
   //remember to return a 2 for noPeopleInWay() since it doesn't matter
 protected:
@@ -114,8 +123,17 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override { return SUCCESS; }
+		  const Board& board) const override { return ChessPiece::validMove(start, end, board); }
+    virtual int properDirection(char dir) const override {
+      cout << dir << endl;
+      return (dir == 'L');
+    }
+    virtual int properSpaces(Position start, Position end) const override{
+      return (getSpaces(start,end) == 5);
+    }
 };
+
+
 class Bishop : public ChessPiece {
 protected:
     friend PieceFactory<Bishop>;
@@ -124,8 +142,16 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override { return SUCCESS; }
+        const Board& board) const override { return ChessPiece::validMove(start, end, board); }
+    virtual int properDirection(char dir) const override {
+      return ((dir == '/')||(dir == '\\'));
+    }
+    virtual int properSpaces(Position start, Position end) const override{
+      return 1;
+    }
 };
+
+
 class Queen : public ChessPiece {
 protected:
     friend PieceFactory<Queen>;
@@ -134,8 +160,10 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override { return SUCCESS; }
+        const Board& board) const override {return ChessPiece::validMove(start, end, board); }
 };
+
+
 class King : public ChessPiece {
 protected:
     friend PieceFactory<King>;
@@ -144,7 +172,7 @@ public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
-        const Board& board) const override { return SUCCESS; }
+        const Board& board) const override {return ChessPiece::validMove(start, end, board); }
 };
 
 class ChessGame : public Board {

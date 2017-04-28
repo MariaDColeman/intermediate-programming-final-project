@@ -42,7 +42,7 @@ char ChessPiece::getDirection(Position start, Position end) const{
     return '\\';
   }
 
-  if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 13) {
+  if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 5) {
     return 'L';
   }
 
@@ -69,6 +69,11 @@ int ChessPiece::getSpaces(Position start, Position end) const{
     return ((int)end.y - (int)start.y);
   }
 
+  if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 5) {
+    return 5;
+  }
+
+  return 0;
 		       
 }
 
@@ -129,8 +134,12 @@ int ChessGame::makeMove(Position start, Position end){
       if ((m_pieces.at(index(start)))->validMove(start, end, *this) >= 0) {
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
-    }
-      return 0;   
+      return 1;
+      }
+      else {
+	return -1;
+      }
+         
   }
   else {
     return -1;

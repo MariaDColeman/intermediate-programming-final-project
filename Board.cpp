@@ -119,7 +119,7 @@ void Board::run() {
  
   
   //   while (!gameOver()) {
-  for (int round = 0; round < 5; round++) {  //allows for 5 rounds
+  for (int round = 0; round < 10; round++) {  //allows for 5 rounds
     Position start;
     Position end;
       int currPlayer;
