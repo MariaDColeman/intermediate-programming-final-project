@@ -161,6 +161,12 @@ public:
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
         const Board& board) const override {return ChessPiece::validMove(start, end, board); }
+    virtual int properDirection(char dir) const override {
+      return (dir != 'L' && dir != '0');
+    }
+    virtual int properSpaces(Position start, Position end) const override{
+      return 1;
+    }
 };
 
 
@@ -173,6 +179,12 @@ public:
     // It may also call the generic Piece::validMove for common logic
     int validMove(Position start, Position end,
         const Board& board) const override {return ChessPiece::validMove(start, end, board); }
+    virtual int properDirection(char dir) const override {
+      return ((dir != 'L')&&(dir != '0'));
+    }
+    virtual int properSpaces(Position start, Position end) const override{
+      return (getSpaces(start, end) == 1);
+    }
 };
 
 class ChessGame : public Board {

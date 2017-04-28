@@ -62,11 +62,11 @@ int ChessPiece::getSpaces(Position start, Position end) const{
   }
 
   if ((end.x - start.x) == (end.y - start.y)) {
-    return ((int)end.x - (int)start.x);
+    return abs((int)end.x - (int)start.x);
   }
 
   if ((end.x - start.x) == -(end.y - start.y)) {
-    return ((int)end.y - (int)start.y);
+    return abs((int)end.y - (int)start.y);
   }
 
   if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 5) {
