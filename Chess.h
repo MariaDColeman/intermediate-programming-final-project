@@ -3,10 +3,12 @@
 
 #include "Game.h"
 #include <cmath>
+#include <string>
 
 using std::cout;
 using std::endl;
 using std::abs;
+using std::string;
 
 // Game status codes
 // -----------------
@@ -210,6 +212,9 @@ public:
     // Setup the chess board with its initial pieces
     virtual void setupBoard() override;
 
+
+    virtual int setUpSavedBoard(string filename) override; 
+    
     // Whether the chess game is over
     virtual bool gameOver() const override { return false; }
 

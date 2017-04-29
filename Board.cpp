@@ -99,6 +99,7 @@ int Board::makeMove(Position start, Position end) {
 
 void Board::run() {
   int initialInput;
+  string filename;
   
   do {
       Prompts::menu();
@@ -109,8 +110,9 @@ void Board::run() {
   }
   else if (initialInput == 2) {
       Prompts::loadGame();
+      cin >> filename;
       
-      //ChessGame::setUpSavedBoard();
+      setUpSavedBoard(filename);
   }
   } while ((initialInput != 1)&&(initialInput !=2));
 
@@ -122,8 +124,8 @@ void Board::run() {
   for (int round = 0; round < 10; round++) {  //allows for 5 rounds
     Position start;
     Position end;
-      int currPlayer;
-      int correctPlayer;
+    //int currPlayer;
+    //int correctPlayer;
       char startx;
       char starty;
       char endx;

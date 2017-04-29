@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
 #include <cmath>
+#include<string>
 #include "Game.h"
 #include "Chess.h"
 #include "Prompts.h"
@@ -11,6 +13,8 @@
 using std::cout;
 using std::endl;
 using std::abs;
+using std::ifstream;
+using std::string;
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
   if(!((properDirection(getDirection(start,end)) && (properSpaces(start, end))))) {
@@ -210,6 +214,45 @@ void ChessGame::setupBoard() {
         initPiece(PAWN_ENUM, BLACK, Position(i, 6));
     }
 }
+
+int ChessGame::setUpSavedBoard(string filename) {
+  string gameIdentifier; 
+  unsigned int lastTurn;
+  char P;
+  char tempx;
+  int tempy;
+  int  idRead;
+  
+  ifstream input (filename);
+  if (input.is_open()) {
+    input >> gameIdentifier;
+    input >> lastTurn;
+    //for (int i = 0; i!= EOF; i++) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      input >> P;
+      if (P == 0) {
+	//piece.owner = 0; for white player
+      }
+      else {
+	//piece.owner = 1; for black player
+      }
+      input >> tempx;
+      //some temp position: tempPosition.x = tempx + 97;
+      input >> tempy;
+      //some temp position: tempPosition.y = tempy + 49;
+
+      //index(tempPosition)
+
+      input >> idRead;
+
+      
+      
+      // } for loop ends
+  }
+  else {
+    Prompts::loadFailure();
+  }
+}
+
 
 //print the chess board
 void Board::printBoard() {
