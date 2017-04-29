@@ -60,10 +60,13 @@ class ChessPiece : public Piece {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
     //noPeopleInWay()?
-    if (properAloneMove(start,end)) {
-      noPeopleInWay(start, end, board);
+    if (properAloneMove(start,end) >= 0) {
+      cout << "is proper alone move, but is it no people in way?" <<endl;//
+      return noPeopleInWay(start, end, board);
     }
-    
+    else {
+      return -1;
+    }
   }
 
   char getDirection(Position start, Position end) const;

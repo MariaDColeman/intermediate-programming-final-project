@@ -42,6 +42,7 @@ public:
     // [DO NOT MODIFY]
     unsigned int height() const { return m_height; }
 
+    
     // Create a piece on the board using the factory.
     // Returns true if the piece was successfully placed on the board
     // [DO NOT MODIFY]

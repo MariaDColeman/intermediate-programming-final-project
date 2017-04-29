@@ -51,7 +51,7 @@ char ChessPiece::getDirection(Position start, Position end) const{
   }
 }
 
-int ChessPiece::getSpaces(Position start, Position end) const{
+int ChessPiece::getSpaces(Position start, Position end) const {
 
   if (start.x == end.x) {
     return (int)end.y - (int)start.y;
@@ -66,7 +66,7 @@ int ChessPiece::getSpaces(Position start, Position end) const{
   }
 
   if ((end.x - start.x) == -(end.y - start.y)) {
-    return (int)end.y - (int)start.y;
+    return -((int)end.y - (int)start.y);
   }
 
   if (((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y)) == 5) {
@@ -78,7 +78,8 @@ int ChessPiece::getSpaces(Position start, Position end) const{
 }
 
 
-int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board)const  {
+int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) const  {
+  //  int ChessPiece::noPeopleInWay(Position start, Position end) const  {
   //char directionCode;
   //int backwards = 0; //0 if not backwards(to the right, up, up-right, up-left)
   Position tempStart = start;
@@ -100,12 +101,72 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board)c
 
   if (dir == 'H') {
     for (int i = tempStart.x + 1; i < tempEnd.x; i++ ) {
-      if (board.m_pieces.at(tempStart.y * m_width + i) != NULL) {
+      Position temp;
+      temp.x = i;
+      temp.y = tempStart.y;
+      
+      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
+       
+      if (board.getPiece(temp) != NULL) {
 	Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
   }
+
+ if (dir == 'V') {
+    for (int i = tempStart.y + 1; i < tempEnd.y; i++ ) {
+      Position temp;
+      temp.x = tempStart.x;
+      temp.y = i;
+      
+      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
+       
+      if (board.getPiece(temp) != NULL) {
+	Prompts::blocked();
+	return MOVE_ERROR_BLOCKED;
+      }
+    }
+
+  }
+
+ if (dir == '/') {
+    for (int i = 1; i < tempEnd.y - tempStart.y; i++ ) {
+      Position temp;
+      temp.x = tempStart.x + i;
+      temp.y = tempStart.y + i;
+      
+      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
+       
+      if (board.getPiece(temp) != NULL) {
+	Prompts::blocked();
+	return MOVE_ERROR_BLOCKED;
+      }
+    }
+  }
+
+ if (dir == '\\') {
+   cout << "thinks dir is " << dir << " and backwards is " << backwards<<endl;//
+   cout << "starty and endy is " << tempStart.y << " " <<  tempEnd.y <<endl;//
+   for (int i = 1; i < tempEnd.y - tempStart.y; i++ ) {
+      Position temp;
+      temp.x = tempStart.x + i;
+      temp.y = tempStart.y - i;
+      
+      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
+       
+      if (board.getPiece(temp) != NULL) {
+	Prompts::blocked();
+	return MOVE_ERROR_BLOCKED;
+      }
+    }
+  }
+
+ 
 
   return SUCCESS;
 }
@@ -121,7 +182,7 @@ int ChessGame::makeMove(Position start, Position end){
   int retCode = Board::makeMove(start, end);
  
   if (retCode==1) {
-      if ((m_pieces.at(index(start)))->validMove(start, end, *this) >= 0) {
+      if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
       return 1;
