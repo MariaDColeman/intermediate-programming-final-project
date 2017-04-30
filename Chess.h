@@ -2,6 +2,7 @@
 #define CHESS_H
 
 #include "Game.h"
+#include "Prompts.h"
 #include <cmath>
 #include <string>
 
@@ -62,9 +63,52 @@ class ChessPiece : public Piece {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
     //noPeopleInWay()?
+    //if whats caling this is a pawn, call get direction() if its white them get direction has to be / with +1 space or \ with -1 space and reversed if black (s0 -1 space and +1 space) then return SUCCESS
+    
+    if(board.getPiece(start)->id() == PAWN_ENUM) {
+      char tempDir = getDirection(start,end);
+      char tempSpaces = getSpaces(start,end);
+
+      if (board.getPiece(end) != NULL) {
+	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
+	  Prompts::illegalMove();
+	  return -1;
+      }
+
+      if (board.getPiece(start)->owner() == WHITE) {
+	if ((tempDir == '/') && (tempSpaces == 1)) {
+	  return SUCCESS;
+	}
+	if ((tempDir == '\\') && (tempSpaces == -1)) {
+	  return SUCCESS;
+	}
+	else {
+	  Prompts::illegalMove();
+	  return -1;
+	}
+      }
+      if (board.getPiece(start)->owner() == BLACK) {
+	if ((tempDir == '/') && (tempSpaces == -1)) {
+	  return SUCCESS;
+	}
+	if ((tempDir == '\\') && (tempSpaces == 1)) {
+	  return SUCCESS;
+	}
+	else {
+	  Prompts::illegalMove();
+	  return -1;
+	}
+      }
+    }
+    
+    }
+    
     if (properAloneMove(start,end) >= 0) {
       cout << "is proper alone move, but is it no people in way?" <<endl;//
-      return noPeopleInWay(start, end, board);
+      return noPeopleInWay(start, end, board); //actually if noPeopleInWay() >= 0
+      //personInDestination() 
+      //if m_pieces.at(position end) != NULL
+      // remove m_pieces.at(end)
     }
     else {
       return -1;
@@ -97,6 +141,13 @@ public:
     }
     virtual int properSpaces(Position start, Position end) const override{
       //MAKE SURE TO COME BACK AND DEAL WITH FIRST MOVE
+
+      if ((m_owner == BLACK) && (start.y == 6)) {
+	return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
+      }
+      else if ((m_owner == WHITE) && (start.y == 1)) {
+	return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
+      }
       
       if (m_owner == BLACK) {
 	return (getSpaces(start, end) == -1);

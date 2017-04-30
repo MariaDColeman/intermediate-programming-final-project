@@ -187,6 +187,9 @@ int ChessGame::makeMove(Position start, Position end){
  
   if (retCode==1) {
       if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
+	if (m_pieces.at(index(end)) != NULL) {
+	    Prompts::capture(m_pieces.at(index(start))->owner());
+	  }
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
       return 1;
@@ -222,30 +225,41 @@ int ChessGame::setUpSavedBoard(string filename) {
   char tempx;
   int tempy;
   int  idRead;
+  char nextChar;
+  Player playerTemp;
   
   ifstream input (filename);
   if (input.is_open()) {
     input >> gameIdentifier;
     input >> lastTurn;
+    m_turn = lastTurn;
     //for (int i = 0; i!= EOF; i++) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      input >> P;
-      if (P == 0) {
+    while (input >> P) {
+      cout << P << endl; 
+      
+      if (P == '0') {
 	//piece.owner = 0; for white player
+	playerTemp = WHITE;
       }
       else {
 	//piece.owner = 1; for black player
+	playerTemp = BLACK;
       }
       input >> tempx;
       //some temp position: tempPosition.x = tempx + 97;
+      cout << tolower(tempx) << endl;
       input >> tempy;
+      cout << tempy << endl;
       //some temp position: tempPosition.y = tempy + 49;
 
       //index(tempPosition)
 
       input >> idRead;
 
-      
-      
+      initPiece(idRead, playerTemp, Position(tolower(tempx)-97, tempy-1));
+
+      // m_turns = 4;
+    } // end of while loop
       // } for loop ends
   }
   else {
