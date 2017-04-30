@@ -1,6 +1,9 @@
 #include <assert.h>
 #include <cctype>
 #include <iostream>
+#include <string>
+#include <sstream>
+
 
 #include "Game.h"
 #include "Prompts.h"
@@ -8,6 +11,8 @@
 using std::cin;
 using std::cout;
 using std::endl;
+using std::getline;
+using std::string;
 
 ///////////////
 // Board //
@@ -117,11 +122,13 @@ void Board::run() {
   } while ((initialInput != 1)&&(initialInput !=2));
 
 
- 
- 
+ string line;
+ std::getline(cin, line);
+	
+  do {
+    
   
-  //   while (!gameOver()) {
-  for (int round = 0; round < 10; round++) {  //allows for 5 rounds
+  //for (int round = 0; round < 10; round++) {  //allows for 5 rounds
     Position start;
     Position end;
     //int currPlayer;
@@ -141,12 +148,36 @@ void Board::run() {
 	Prompts::playerPrompt(BLACK, ((m_turn)/2));
 	}
 
-        printBoard();
+        printBoard(); //will need to toggle
 
-        cin >> startx;
-        cin >> starty;
-        cin >> endx;
-        cin >> endy;
+        std::getline(cin, line);
+	//need to convert to lower
+	if (!line.compare("q")) {  //opposite b/c compare returns 0 if same
+	  cout << "handle quit later" << endl;
+	  break;
+	}
+	if (!line.compare("board")) {
+	  cout << "handle board later" << endl;
+	  std::getline(cin, line); //get move input
+	}
+        if (!line.compare("save")) {
+	  cout <<"handle save later" << endl;
+	  std::getline(cin, line); //get move input
+	}
+        if (!line.compare("forfeit")) {
+	  cout << "check turn # later" <<endl;
+	  Prompts::win(Player(m_turn%2), m_turn); //turn input might not be correct
+	  line = "q";
+	  break;
+	}
+	
+	std::stringstream lineReader(line);
+
+	
+        lineReader >> startx;
+        lineReader >> starty;
+        lineReader >> endx;
+        lineReader >> endy;
 
 	startx = tolower(startx);
         endx = tolower(endx);
@@ -161,12 +192,12 @@ void Board::run() {
 	//        cout << end.x << " " << end.y <<endl;//
 
 	//cout << makeMove(start,end) << endl;
-    } while (makeMove(start, end) < 0);
+
+    } while (!line.compare("q") || makeMove(start, end) < 0);
    
   
-
         m_turn++;
-      
-   }
-  
+  } while (!(gameOver() || !line.compare("q")));
+
+
 }
