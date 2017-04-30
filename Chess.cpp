@@ -5,10 +5,11 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
-#include<string>
+#include <string>
 #include "Game.h"
 #include "Chess.h"
 #include "Prompts.h"
+#include "Terminal.h"
 
 using std::cout;
 using std::endl;
@@ -268,9 +269,78 @@ int ChessGame::setUpSavedBoard(string filename) {
 }
 
 
+
 //print the chess board
 void Board::printBoard() {
+  Terminal::colorBg(Terminal::BLACK);
+Terminal::colorFg(1, Terminal::BLACK);
+  
+  string kg = "\u265A";
+  string q = "\u265B";
+  string r = "\u265C";
+  string b = "\u265D";
+  string kt = "\u265E";
+  string p = "\u265F";
+
+  //prints one in circle for unknown pieces
+  string u = "\u2776";
+  
+  string sym;
+
   for (int i = m_height - 1; i >= 0; i--) {
+    cout << i + 1<< " ";
+    for (int j=0; j < m_width; j++) {
+
+      //alternates background for checkerboard
+      if ((i + j) % 2) {
+        Terminal::colorBg(Terminal::WHITE);
+      }
+      else {
+        Terminal::colorBg(Terminal::BLACK);
+      }
+  
+      
+      if (m_pieces.at((i*m_width) + j) != NULL) {
+	//print correct piece rep
+	switch (m_pieces[(i*m_width) + j]->id()) {
+	case KING_ENUM: sym = kg;
+	  break;
+	case QUEEN_ENUM: sym = q;
+	  break;
+        case BISHOP_ENUM: sym = b;
+	  break;
+	case KNIGHT_ENUM: sym = kt;
+	  break;
+	case ROOK_ENUM: sym = r;
+	  break;
+	case PAWN_ENUM: sym = p;
+	  break;
+	default: sym = u;
+	  break;
+	}
+
+	//change color for black vs white
+	if (m_pieces[(i*m_width) + j]->owner()) {
+	  Terminal::colorFg(1, Terminal::BLACK);
+	}
+	else {
+	  Terminal::colorFg(1, Terminal::WHITE);
+	}
+	cout  << sym << " ";
+    }
+      else {
+	cout << "  ";
+      }
+  }
+    //reset colors
+    Terminal::colorBg(Terminal::BLACK);
+    Terminal::colorFg(1, Terminal::BLACK);
+    cout << endl;
+  }
+  
+  cout << "  A B C D E F G H";
+
+  /*  for (int i = m_height - 1; i >= 0; i--) {
     for (int j=0; j < m_width; j++) {
       if (m_pieces.at((i*m_width) + j) != NULL) {
 	cout << m_pieces[(i*m_width) + j]->owner() << m_pieces[(i*m_width) + j]->id();
@@ -282,6 +352,8 @@ void Board::printBoard() {
   }
     cout << endl;
   }
+  */
+  Terminal::colorFg(1, Terminal::WHITE);
 }
 
 /*
