@@ -338,7 +338,7 @@ Terminal::colorFg(1, Terminal::BLACK);
     cout << endl;
   }
   
-  cout << "  A B C D E F G H";
+  cout << "  A B C D E F G H"<<endl;
 
   /*  for (int i = m_height - 1; i >= 0; i--) {
     for (int j=0; j < m_width; j++) {
