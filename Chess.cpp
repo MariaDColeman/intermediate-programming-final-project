@@ -17,15 +17,47 @@ using std::abs;
 using std::ifstream;
 using std::string;
 
+
+
+int ChessPiece::isCheckedPosition(Position position, const Board& board) const {
+  //assuming position is position of the king right now or in future
+  //go through m_pieces for the other team and see if its a valid move from where the piece is currently to "position"
+  //if any can get to "position", then king is in check so Prompts::check(pass a player probably "other team")
+
+  
+
+  
+  return SUCCESS;  
+
+  
+} 
+
+
 int ChessPiece::properAloneMove(Position start, Position end) const {
-  if(!((properDirection(getDirection(start,end)) && (properSpaces(start, end))))) {
-    //cout << getDirection(start,end) << endl;
+
+  int i = properDirection(getDirection(start,end)) > 0;
+  int j = properSpaces(start,end) > 0;
+  int k = i && j;
+  
+  //cout << "Proper dir" << (properDirection(getDirection(start,end)) > 0)  << endl;
+  //cout << "proper spaces" << (properSpaces(start,end) > 0) << endl;
+  cout << "i and j " << i << " " <<j<< " " << k<<endl;
+  
+  //cout << "both" << ((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0))) << endl;
+ 
+  //  if(((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0)))) {
+  if (k) {
+
+  //cout << getDirection(start,end) << endl;
     //cout << getSpaces(start,end) << endl;
-    Prompts::illegalMove();
-    return MOVE_ERROR_ILLEGAL;
+    //Prompts::illegalMove();
+    cout << "in" << endl;
+    return SUCCESS;
+    //return MOVE_ERROR_ILLEGAL;
   }
   else {
     return SUCCESS;
+    //return MOVE_ERROR_ILLEGAL;
   }
 }
 
@@ -105,7 +137,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
   if (dir == 'H') {
-    for (int i = tempStart.x + 1; i < tempEnd.x; i++ ) {
+    for (int i = (int) tempStart.x + 1; i < (int) tempEnd.x; i++ ) {
       Position temp;
       temp.x = i;
       temp.y = tempStart.y;
@@ -114,14 +146,14 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
-	Prompts::blocked();
+	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
   }
 
  if (dir == 'V') {
-    for (int i = tempStart.y + 1; i < tempEnd.y; i++ ) {
+   for (int i = (int) tempStart.y + 1; i < (int) tempEnd.y; i++ ) {
       Position temp;
       temp.x = tempStart.x;
       temp.y = i;
@@ -130,7 +162,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
-	Prompts::blocked();
+	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -138,7 +170,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
  if (dir == '/') {
-    for (int i = 1; i < tempEnd.y - tempStart.y; i++ ) {
+   for (int i = 1; i < (int) (tempEnd.y - tempStart.y); i++ ) {
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y + i;
@@ -147,7 +179,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
-	Prompts::blocked();
+	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -156,7 +188,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
  if (dir == '\\') {
    cout << "thinks dir is " << dir << " and backwards is " << backwards<<endl;//
    cout << "starty and endy is " << tempStart.y << " " <<  tempEnd.y <<endl;//
-   for (int i = 1; i < tempEnd.y - tempStart.y; i++ ) {
+   for (int i = 1; i < (int) (tempEnd.y - tempStart.y); i++ ) {
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y - i;
@@ -165,7 +197,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
-	Prompts::blocked();
+	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -187,21 +219,33 @@ int ChessGame::makeMove(Position start, Position end){
   int retCode = Board::makeMove(start, end);
  
   if (retCode==1) {
-      if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
+      int tempCode = m_pieces.at(index(start))->validMove(start, end, *this);    
+	//if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
+
+      //if it's a valid move
+      if (tempCode > 0) {
 	if (m_pieces.at(index(end)) != NULL) {
 	    Prompts::capture(m_pieces.at(index(start))->owner());
-	  }
+	}
       m_pieces.at(index(end)) = m_pieces.at(index(start));
       m_pieces.at(index(start)) = NULL;
-      return 1;
-      }
-      else {
-	return -1;
+      return SUCCESS;
+      } else {
+	switch (tempCode) {
+	    case MOVE_ERROR_ILLEGAL:
+	      Prompts::illegalMove();
+	      return MOVE_ERROR_ILLEGAL;
+	      break;
+	    case MOVE_ERROR_BLOCKED:
+	      Prompts::blocked();
+	      return MOVE_ERROR_BLOCKED;
+	      break;
+        }
       }
          
   }
   else {
-    return -1;
+    return retCode;
   }
 }
 
@@ -226,7 +270,7 @@ int ChessGame::setUpSavedBoard(string filename) {
   char tempx;
   int tempy;
   int  idRead;
-  char nextChar;
+
   Player playerTemp;
   
   ifstream input (filename);
@@ -265,7 +309,9 @@ int ChessGame::setUpSavedBoard(string filename) {
   }
   else {
     Prompts::loadFailure();
+    return LOAD_FAILURE;
   }
+  return 1;
 }
 
 
@@ -285,11 +331,13 @@ Terminal::colorFg(1, Terminal::BLACK);
   //prints one in circle for unknown pieces
   string u = "\u2776";
   
+  cout << "This is a single character: " << kg << endl; 
+
   string sym;
 
   for (int i = m_height - 1; i >= 0; i--) {
     cout << i + 1<< " ";
-    for (int j=0; j < m_width; j++) {
+    for (int j=0; j < (int) m_width; j++) {
 
       //alternates background for checkerboard
       if ((i + j) % 2) {

@@ -59,11 +59,16 @@ class ChessPiece : public Piece {
   //virtual int noPeopleInWay(Position start, Position end, const Board& board); 
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const;
-  virtual int validMove(Position start, Position end, const Board& board) const override {
+ int isCheckedPosition(Position position, const Board& board) const;
+ virtual int validMove(Position start, Position end, const Board& board) const override {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
     //noPeopleInWay()?
     //if whats caling this is a pawn, call get direction() if its white them get direction has to be / with +1 space or \ with -1 space and reversed if black (s0 -1 space and +1 space) then return SUCCESS
+
+    Position position;
+    int check = isCheckedPosition(position, board);
+
     
     if(board.getPiece(start)->id() == PAWN_ENUM) {
       char tempDir = getDirection(start,end);
@@ -71,8 +76,8 @@ class ChessPiece : public Piece {
 
       if (board.getPiece(end) != NULL) {
 	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-	  Prompts::illegalMove();
-	  return -1;
+	  // Prompts::blocked();
+	  return MOVE_ERROR_BLOCKED;
       }
 
       if (board.getPiece(start)->owner() == WHITE) {
@@ -82,10 +87,12 @@ class ChessPiece : public Piece {
 	if ((tempDir == '\\') && (tempSpaces == -1)) {
 	  return SUCCESS;
 	}
+	
 	else {
-	  Prompts::illegalMove();
-	  return -1;
+	  // Prompts::illegalMove();
+	  return MOVE_ERROR_ILLEGAL;
 	}
+	
       }
       if (board.getPiece(start)->owner() == BLACK) {
 	if ((tempDir == '/') && (tempSpaces == -1)) {
@@ -95,8 +102,8 @@ class ChessPiece : public Piece {
 	  return SUCCESS;
 	}
 	else {
-	  Prompts::illegalMove();
-	  return -1;
+	  //Prompts::illegalMove();
+	  return MOVE_ERROR_ILLEGAL;
 	}
       }
     }
@@ -111,15 +118,15 @@ class ChessPiece : public Piece {
       // remove m_pieces.at(end)
     }
     else {
-      return -1;
+      return MOVE_ERROR_ILLEGAL;
     }
   }
 
   char getDirection(Position start, Position end) const;
   int getSpaces(Position start, Position end) const;
   
-  virtual int properDirection(char dir) const {return 0;}
-  virtual int properSpaces(Position start, Position end) const {return 0;}
+  virtual int properDirection(char) const {return 0;}
+  virtual int properSpaces(Position, Position) const {return 0;}
 
   
 };
@@ -137,6 +144,7 @@ public:
       //return SUCCESS;
     }
     virtual int properDirection(char dir) const override {
+      //   cout << "pawn checking proper direction" << endl;
       return (dir == 'V');
     }
     virtual int properSpaces(Position start, Position end) const override{
@@ -169,7 +177,7 @@ public:
     virtual int properDirection(char dir) const override {
       return ((dir == 'V')||(dir == 'H'));
     }
-    virtual int properSpaces(Position start, Position end) const override{
+    virtual int properSpaces(Position, Position) const override{
       return 1;
     }
 };
@@ -207,7 +215,7 @@ public:
     virtual int properDirection(char dir) const override {
       return ((dir == '/')||(dir == '\\'));
     }
-    virtual int properSpaces(Position start, Position end) const override{
+    virtual int properSpaces(Position, Position) const override{
       return 1;
     }
 };
@@ -225,7 +233,7 @@ public:
     virtual int properDirection(char dir) const override {
       return (dir != 'L' && dir != '0');
     }
-    virtual int properSpaces(Position start, Position end) const override{
+    virtual int properSpaces(Position, Position) const override{
       return 1;
     }
 };

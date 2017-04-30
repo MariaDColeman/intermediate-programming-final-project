@@ -88,7 +88,7 @@ public:
     // all of the gameplay loop logic here in the Board class rather than
     // overriding this method in the specialized Game-specific class
 
-    virtual int setUpSavedBoard(string filename) {return 0;}
+    virtual int setUpSavedBoard(string) {return 0;}
     
     virtual void run(); 
       /*

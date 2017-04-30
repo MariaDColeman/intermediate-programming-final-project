@@ -191,7 +191,7 @@ void Board::run() {
 	//        cout << start.x << " " << start.y <<endl;// error checking
 	//        cout << end.x << " " << end.y <<endl;//
 
-	//cout << makeMove(start,end) << endl;
+	//	cout << makeMove(start,end) << endl;
 
     } while (!line.compare("q") || makeMove(start, end) < 0);
    
