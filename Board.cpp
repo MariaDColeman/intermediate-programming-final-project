@@ -13,6 +13,8 @@ using std::cout;
 using std::endl;
 using std::getline;
 using std::string;
+using std::isdigit;
+using std::isalpha;
 
 ///////////////
 // Board //
@@ -116,7 +118,6 @@ void Board::run() {
   else if (initialInput == 2) {
       Prompts::loadGame();
       cin >> filename;
-      
       setUpSavedBoard(filename);
   }
   } while ((initialInput != 1)&&(initialInput !=2));
@@ -125,20 +126,19 @@ void Board::run() {
  string line;
  std::getline(cin, line);
 	
-  do {
-    
-  
-  //for (int round = 0; round < 10; round++) {  //allows for 5 rounds
+ do { // while game is not over
     Position start;
     Position end;
-    //int currPlayer;
-    //int correctPlayer;
       char startx;
       char starty;
       char endx;
       char endy;
+      int nonMoveInput = 0; //a controlling factor for getting player input
+      int tryingToMove = 0; //a controlling factor for parse error
+      int wantsBoard = 1; //should be 0;
     
-    do {
+    do { //white the current player needs to make a move
+      //prints current player prompt
         if ((m_turn%2)==1) {
 	  cout << endl;
 	  Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
@@ -148,56 +148,83 @@ void Board::run() {
 	Prompts::playerPrompt(BLACK, ((m_turn)/2));
 	}
 
+	//prints board
+	if (wantsBoard) {
         printBoard(); //will need to toggle
+	}
 
+	//gets user input for movement or other, converts to lower
         std::getline(cin, line);
-	//need to convert to lower
+     	for (unsigned int i = 0; i < line.length(); i++) {
+	  line[i] = tolower(line[i]);
+	}
+	
+	//handles non movement input
 	if (!line.compare("q")) {  //opposite b/c compare returns 0 if same
 	  cout << "handle quit later" << endl;
 	  break;
 	}
-	if (!line.compare("board")) {
-	  cout << "handle board later" << endl;
-	  std::getline(cin, line); //get move input
+	if (!line.compare("board")) { //toggles board
+	  wantsBoard = !wantsBoard;
+	  nonMoveInput = 1;
+	  if (wantsBoard) {
+	    printBoard();
+	  }
 	}
         if (!line.compare("save")) {
 	  cout <<"handle save later" << endl;
-	  std::getline(cin, line); //get move input
+	  nonMoveInput = 1;
 	}
         if (!line.compare("forfeit")) {
 	  cout << "check turn # later" <<endl;
-	  Prompts::win(Player(m_turn%2), m_turn); //turn input might not be correct
+	  Prompts::win(Player(m_turn%2), m_turn);
+	  //turn input might not be correct
 	  line = "q";
 	  break;
 	}
-	
-	std::stringstream lineReader(line);
 
-	
-        lineReader >> startx;
+	//handles movement input
+	if (!nonMoveInput) {
+	  tryingToMove = 1;
+	  //if correct movement input format, try to make the move
+	  if (isalpha(line[0]) && isalpha(line[3]) && isdigit(line[1]) && isdigit(line[4])) {
+
+	    //std::stringstream lineReader(line);
+	    /*lineReader >> startx;
         lineReader >> starty;
         lineReader >> endx;
         lineReader >> endy;
+	    */
+	startx = tolower(line[0]);
+        endx = tolower(line[3]);
+	starty = line[1];
+	endy = line[4];
 
-	startx = tolower(startx);
-        endx = tolower(endx);
-	//Position start(startx - 97, starty - 49);
-        //Position end(endx - 97, endy - 49);
+	//converts to our positional coordinates
 	start.x = startx-97;
 	start.y = starty-49;
 	end.x = endx-97;
 	end.y = endy-49;
-	
+	  } else { //incorrect moving input format
+	    Prompts::parseError();
+	    nonMoveInput = 1;
+	  }
 	//        cout << start.x << " " << start.y <<endl;// error checking
 	//        cout << end.x << " " << end.y <<endl;//
 
 	//	cout << makeMove(start,end) << endl;
-
-    } while (!line.compare("q") || makeMove(start, end) < 0);
+	} else if (!tryingToMove) { //incorrect nonmove input format
+	    Prompts::parseError();
+	    nonMoveInput = 1;
+        }
+    } while (!line.compare("q") || nonMoveInput || makeMove(start, end) < 0);
+    //while curr player needs to make a move
+    //if not quitting or hasn't inputed movement places or move was invalid
    
   
-        m_turn++;
+     m_turn++;
   } while (!(gameOver() || !line.compare("q")));
+ //while the game is not over or they don't want to quit
 
 
 }
