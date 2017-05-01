@@ -69,16 +69,26 @@ class ChessPiece : public Piece {
     Position position;
     int check = isCheckedPosition(position, board);
 
+
+if (board.getPiece(end) != NULL) {
+	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
+	  // Prompts::blocked();
+	  // cout << "in same owner" << endl;
+	  return MOVE_ERROR_BLOCKED;
+      }
+
     
     if(board.getPiece(start)->id() == PAWN_ENUM) {
       char tempDir = getDirection(start,end);
       char tempSpaces = getSpaces(start,end);
-
+      /*
       if (board.getPiece(end) != NULL) {
 	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
 	  // Prompts::blocked();
+	  cout << "in same owner" << endl;
 	  return MOVE_ERROR_BLOCKED;
       }
+      */
 
       if (board.getPiece(start)->owner() == WHITE) {
 	if ((tempDir == '/') && (tempSpaces == 1)) {
@@ -106,12 +116,13 @@ class ChessPiece : public Piece {
 	  return MOVE_ERROR_ILLEGAL;
 	}
       }
-    }
+      }
     
     }
     
     if (properAloneMove(start,end) >= 0) {
-      cout << "is proper alone move, but is it no people in way?" <<endl;//
+      //cout << "is proper alone move, but is it no people in way?" << endl;//
+      //cout << noPeopleInWay(start, end, board) << endl;
       return noPeopleInWay(start, end, board); //actually if noPeopleInWay() >= 0
       //personInDestination() 
       //if m_pieces.at(position end) != NULL
@@ -252,7 +263,8 @@ public:
       return ((dir != 'L')&&(dir != '0'));
     }
     virtual int properSpaces(Position start, Position end) const override{
-      return (getSpaces(start, end) == 1);
+      //cout << "king proper spaces" << getSpaces(start, end) << endl;
+      return (abs(getSpaces(start, end)) == 1);
     }
 };
 

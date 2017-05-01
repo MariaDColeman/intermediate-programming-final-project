@@ -35,29 +35,19 @@ int ChessPiece::isCheckedPosition(Position position, const Board& board) const {
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
 
-  int i = properDirection(getDirection(start,end)) > 0;
-  int j = properSpaces(start,end) > 0;
-  int k = i && j;
-  
+   
   //cout << "Proper dir" << (properDirection(getDirection(start,end)) > 0)  << endl;
   //cout << "proper spaces" << (properSpaces(start,end) > 0) << endl;
-  cout << "i and j " << i << " " <<j<< " " << k<<endl;
-  
   //cout << "both" << ((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0))) << endl;
  
-  //  if(((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0)))) {
-  if (k) {
-
-  //cout << getDirection(start,end) << endl;
-    //cout << getSpaces(start,end) << endl;
+   
+  if (((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start,end)) > 0)) {
     //Prompts::illegalMove();
-    cout << "in" << endl;
-    return SUCCESS;
-    //return MOVE_ERROR_ILLEGAL;
+    //cout << "in loooooop" << endl;
+    return SUCCESS;   
   }
   else {
-    return SUCCESS;
-    //return MOVE_ERROR_ILLEGAL;
+    return MOVE_ERROR_ILLEGAL;
   }
 }
 
@@ -124,11 +114,15 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   
   char dir = getDirection(start, end);
   int spaces = getSpaces(start, end);
-  int backwards;
+  int backwards = 0;
+
+  //cout << "dir is ahhh " << dir << endl;
+
   
   if (spaces < 0) {
     //going in the negative x or the negative y
     backwards = 1;
+    //cout << "made backwards 1" << endl;
   }
 
   if (backwards) {
@@ -136,6 +130,11 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
     tempEnd = start;
   }
 
+  //cout << "tempStart.y = "<<  tempStart.y << endl;
+  //cout << "tempEnd.y = " << tempEnd.y << endl;
+  
+
+  
   if (dir == 'H') {
     for (int i = (int) tempStart.x + 1; i < (int) tempEnd.x; i++ ) {
       Position temp;
@@ -170,7 +169,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
  if (dir == '/') {
-   for (int i = 1; i < (int) (tempEnd.y - tempStart.y); i++ ) {
+   for (int i = 1; i < (int) (tempEnd.y) - (int) (tempStart.y); i++ ) {
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y + i;
@@ -186,14 +185,17 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
  if (dir == '\\') {
-   cout << "thinks dir is " << dir << " and backwards is " << backwards<<endl;//
-   cout << "starty and endy is " << tempStart.y << " " <<  tempEnd.y <<endl;//
-   for (int i = 1; i < (int) (tempEnd.y - tempStart.y); i++ ) {
+   //cout << "thinks dir is " << dir << " and backwards is " << backwards<<endl;//
+   //cout << "starty and endy is " << tempStart.y << " " <<  tempEnd.y <<endl;//
+   //cout << " in \\" << endl;
+   //   for (int i = 1; i < (int) (tempEnd.y) - (int) (tempStart.y); i++ ) {
+     for (int i = 1; i < (int) (tempStart.y) - (int) (tempEnd.y); i++ ) {
+       //  cout << "in for loop" << endl;
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y - i;
       
-      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      //cout << "checking in \\" << temp.x << " " << temp.y<< endl;//
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
@@ -204,7 +206,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
  
-
+ 
   return SUCCESS;
 }
 
@@ -217,11 +219,12 @@ int ChessGame::makeMove(Position start, Position end){
     // Feel free to use this or change it as you see fit
   
   int retCode = Board::makeMove(start, end);
- 
+  int tempCode;
   if (retCode==1) {
-      int tempCode = m_pieces.at(index(start))->validMove(start, end, *this);    
-	//if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
-
+    tempCode = m_pieces.at(index(start))->validMove(start, end, *this);    
+    
+      //if ((m_pieces.at(index(start)))->validMove(start, end, *this) > 0) {
+    //    cout << "tempCode is: " << tempCode << endl;
       //if it's a valid move
       if (tempCode > 0) {
 	if (m_pieces.at(index(end)) != NULL) {
@@ -240,7 +243,10 @@ int ChessGame::makeMove(Position start, Position end){
 	      Prompts::blocked();
 	      return MOVE_ERROR_BLOCKED;
 	      break;
-        }
+	    default:
+	      return -1;
+	      break;
+          }
       }
          
   }
@@ -280,7 +286,7 @@ int ChessGame::setUpSavedBoard(string filename) {
     m_turn = lastTurn;
     //for (int i = 0; i!= EOF; i++) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     while (input >> P) {
-      cout << P << endl; 
+      //cout << P << endl; 
       
       if (P == '0') {
 	//piece.owner = 0; for white player
@@ -292,9 +298,9 @@ int ChessGame::setUpSavedBoard(string filename) {
       }
       input >> tempx;
       //some temp position: tempPosition.x = tempx + 97;
-      cout << tolower(tempx) << endl;
+      //cout << tolower(tempx) << endl;
       input >> tempy;
-      cout << tempy << endl;
+      //cout << tempy << endl;
       //some temp position: tempPosition.y = tempy + 49;
 
       //index(tempPosition)
@@ -331,7 +337,7 @@ Terminal::colorFg(1, Terminal::BLACK);
   //prints one in circle for unknown pieces
   string u = "\u2776";
   
-  cout << "This is a single character: " << kg << endl; 
+  //cout << "This is a single character: " << kg << endl; 
 
   string sym;
 
