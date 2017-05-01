@@ -175,10 +175,11 @@ public:
     // Returns an integer representing move validity
     // >= 0 = valid, < 0 = invalid
     // [Do not modify the type of this method]
-    virtual int validMove(Position start, Position end,
-           const Board& board) const {
+    virtual int validMove(Position, Position,
+           const Board&) const {
         // This particular method may include generic logic to check
-        // for a valid move. 
+        // for a valid move.
+            
         return 0;
     }
 

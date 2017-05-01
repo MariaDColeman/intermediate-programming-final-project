@@ -59,15 +59,17 @@ class ChessPiece : public Piece {
   //virtual int noPeopleInWay(Position start, Position end, const Board& board); 
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const;
- int isCheckedPosition(Position position, const Board& board) const;
+ //int isCheckedPosition(Position position, const Board& board) const;
+ int isCheckMate(Board& board) const; 
+ 
  virtual int validMove(Position start, Position end, const Board& board) const override {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
     //noPeopleInWay()?
     //if whats caling this is a pawn, call get direction() if its white them get direction has to be / with +1 space or \ with -1 space and reversed if black (s0 -1 space and +1 space) then return SUCCESS
 
-    Position position;
-    int check = isCheckedPosition(position, board);
+    //Position position;
+    //    int check = isCheckedPosition(position, board);
 
 
 if (board.getPiece(end) != NULL) {
@@ -283,6 +285,7 @@ public:
     // Setup the chess board with its initial pieces
     virtual void setupBoard() override;
 
+    int isCheckedPosition(Position position) const;
 
     virtual int setUpSavedBoard(string filename) override; 
     
