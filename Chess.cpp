@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <ostream>
 #include <fstream>
 #include <cmath>
 #include <string>
@@ -15,6 +16,7 @@ using std::cout;
 using std::endl;
 using std::abs;
 using std::ifstream;
+using std::ostream;
 using std::string;
 
 
@@ -401,7 +403,24 @@ int ChessGame::setUpSavedBoard(string filename) {
   return 1;
 }
 
+int Board::saveBoard(string filename) {
+  cout<<"saving! " << filename<<endl;//
+  std::ofstream output;
+  output.open(filename);
+  output << "chess" <<endl;
+  output << m_turn <<endl;
 
+  for (unsigned int i = 0; i < m_height * m_width; i++) {
+    if (m_pieces.at(i) != NULL) {
+      output << m_pieces.at(i)->owner()<< " ";
+      output << ((char) (i % m_width + 'a'));
+      output << (i / m_height + 1) << " ";
+      output << m_pieces.at(i)->id() <<endl;
+    }
+  }
+  output.close();
+  return SUCCESS;
+}
 
 //print the chess board
 void Board::printBoard() {

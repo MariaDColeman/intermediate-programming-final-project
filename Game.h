@@ -89,7 +89,8 @@ public:
     // overriding this method in the specialized Game-specific class
 
     virtual int setUpSavedBoard(string) {return 0;}
-    
+
+    virtual int saveBoard(string filename);
     virtual void run(); 
       /*
       setupBoard();

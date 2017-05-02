@@ -105,42 +105,47 @@ int Board::makeMove(Position start, Position end) {
 }
 
 void Board::run() {
-  int initialInput;
+  int initialInput = 0;
+  string line;
   string filename;
-  
+  int nonMoveInput = 0; //a controlling factor for getting player input
+  int wantsBoard = 1; //default should be 0, change before submitting
   do {
       Prompts::menu();
-      cin >> initialInput;
-  if (initialInput == 1) {
+      std::getline(cin, line);
+      //if (initialInput == 1) {
+  if (!line.compare("1")) {  //opposite b/c compare returns 0 if same
       this->setupBoard();
       m_turn = 1;
+      initialInput = 1;
   }
-  else if (initialInput == 2) {
-      Prompts::loadGame();
-      cin >> filename;
+  //else if (initialInput == 2) {
+  else if (!line.compare("2")) {  //opposite b/c compare returns 0 if same
+    initialInput = 1;
+    Prompts::loadGame();
+      std::getline(cin, line);
+      std::stringstream lineReader(line);
+      lineReader>> filename;
       setUpSavedBoard(filename);
   }
-  } while ((initialInput != 1)&&(initialInput !=2));
+  } while (!initialInput);
+  //} while ((initialInput != 1)&&(initialInput !=2));
 
-
- string line;
- std::getline(cin, line);
 	
  do { // while game is not over
-    Position start;
-    Position end;
-      char startx;
-      char starty;
-      char endx;
-      char endy;
-      int nonMoveInput = 0; //a controlling factor for getting player input
-      int tryingToMove = 0; //a controlling factor for parse error
-      int wantsBoard = 1; //should be 0;
+      Position start;
+      Position end;
     
-    do { //white the current player needs to make a move
+    do { //while the current player needs to make a move
       //prints current player prompt
-        if ((m_turn%2)==1) {
-	  cout << endl;
+      char startx = 0;
+      char starty = 'a';
+      char endx = 0;
+      char endy = 'a';
+      nonMoveInput = 0; //a controlling factor for getting player input
+    
+      if ((m_turn%2)==1) {
+	cout << endl;//spacing for now, remove later?
 	  Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
 	}
         else {
@@ -150,18 +155,21 @@ void Board::run() {
 
 	//prints board
 	if (wantsBoard) {
-        printBoard(); //will need to toggle
+        printBoard(); //will need to toggle default
 	}
 
 	//gets user input for movement or other, converts to lower
         std::getline(cin, line);
-     	for (unsigned int i = 0; i < line.length(); i++) {
+	//cout << "line above is " << line << endl;
+ 	for (unsigned int i = 0; i < line.length(); i++) {
 	  line[i] = tolower(line[i]);
 	}
+	//cout << "line below is " << line << endl;
 	
 	//handles non movement input
 	if (!line.compare("q")) {  //opposite b/c compare returns 0 if same
 	  cout << "handle quit later" << endl;
+	  nonMoveInput = 1;
 	  break;
 	}
 	if (!line.compare("board")) { //toggles board
@@ -172,55 +180,57 @@ void Board::run() {
 	  }
 	}
         if (!line.compare("save")) {
-	  cout <<"handle save later" << endl;
+	  cout <<"handle save later" << endl; //
+	  Prompts::saveGame();
+	  std::getline(cin, line);
+           std::stringstream lineReader(line);
+           lineReader>> filename;
+	  saveBoard(filename); //not dynamic b/c in board
 	  nonMoveInput = 1;
 	}
         if (!line.compare("forfeit")) {
-	  cout << "check turn # later" <<endl;
+	  cout << "check turn # later" <<endl; //
 	  Prompts::win(Player(m_turn%2), m_turn);
 	  //turn input might not be correct
 	  line = "q";
+	  nonMoveInput = 1;
 	  break;
 	}
 
-	//handles movement input
+	//cout << "nonmove is " << nonMoveInput << endl; //
+      	//handles movement input
 	if (!nonMoveInput) {
-	  tryingToMove = 1;
-	  //if correct movement input format, try to make the move
-	  if (isalpha(line[0]) && isalpha(line[3]) && isdigit(line[1]) && isdigit(line[4])) {
-
-	    //std::stringstream lineReader(line);
-	    /*lineReader >> startx;
+	  
+	std::stringstream lineReader(line);
+	//cout << "line is" << line << endl;//
+	lineReader >> startx;
         lineReader >> starty;
         lineReader >> endx;
         lineReader >> endy;
-	    */
-	startx = tolower(line[0]);
-        endx = tolower(line[3]);
-	starty = line[1];
-	endy = line[4];
+	    
+	startx = tolower(startx);
+        endx = tolower(endx);
 
 	//converts to our positional coordinates
 	start.x = startx-97;
 	start.y = starty-49;
 	end.x = endx-97;
 	end.y = endy-49;
-	  } else { //incorrect moving input format
+	
+	if (!isalpha((char)startx) || !isalpha((char)endx) || !isdigit((char)starty) || !isdigit((char)endy)) {
+	    //incorrect moving input format
 	    Prompts::parseError();
 	    nonMoveInput = 1;
-	  }
-	//        cout << start.x << " " << start.y <<endl;// error checking
-	//        cout << end.x << " " << end.y <<endl;//
-
+	}
+	}
+	  
+	//cout << startx << " " << starty <<endl;// error checking
+	//cout << endx << " " << endy <<endl;//
 	//	cout << makeMove(start,end) << endl;
-	} else if (!tryingToMove) { //incorrect nonmove input format
-	    Prompts::parseError();
-	    nonMoveInput = 1;
-        }
+	
     } while (!line.compare("q") || nonMoveInput || makeMove(start, end) < 0);
     //while curr player needs to make a move
     //if not quitting or hasn't inputed movement places or move was invalid
-   
   
      m_turn++;
   } while (!(gameOver() || !line.compare("q")));

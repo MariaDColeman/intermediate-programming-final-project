@@ -61,7 +61,7 @@ class ChessPiece : public Piece {
  int noPeopleInWay(Position start, Position end, const Board& board) const;
  //int isCheckedPosition(Position position, const Board& board) const;
  int isCheckMate(Board& board) const; 
- 
+
  virtual int validMove(Position start, Position end, const Board& board) const override {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
     //getDirection()
@@ -288,7 +288,7 @@ public:
     int isCheckedPosition(Position position) const;
 
     virtual int setUpSavedBoard(string filename) override; 
-    
+    //virtual int saveBoard(string filename) override;    
     // Whether the chess game is over
     virtual bool gameOver() const override { return false; }
 
