@@ -60,7 +60,7 @@ class ChessPiece : public Piece {
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const;
  //int isCheckedPosition(Position position, const Board& board) const;
- int isCheckMate(Board& board) const; 
+ // int isCheckMate(Board& board) const; 
 
  virtual int validMove(Position start, Position end, const Board& board) const override {
     //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
@@ -244,6 +244,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override {return ChessPiece::validMove(start, end, board); }
     virtual int properDirection(char dir) const override {
+       cout << "                                     ITS THE QUEEN" << dir << endl;
       return (dir != 'L' && dir != '0');
     }
     virtual int properSpaces(Position, Position) const override{
@@ -286,11 +287,11 @@ public:
     virtual void setupBoard() override;
 
     int isCheckedPosition(Position position) const;
-
+    int isCheckMate() const; 
     virtual int setUpSavedBoard(string filename) override; 
     //virtual int saveBoard(string filename) override;    
     // Whether the chess game is over
-    virtual bool gameOver() const override { return false; }
+    virtual bool gameOver() const override;
 
     // Perform a move from the start Position to the end Position
     // The method returns an integer with the status

@@ -27,22 +27,25 @@ using std::string;
   //call for every board state. put back (in valid move) and print error if this says it will be in checked position
   //go through m_pieces for the other team and see if its a valid move from where the piece is currently to "position"
   //if any can get to "position", then king is in check so Prompts::check(pass a player probably "other team")
-    cout << "in isCheckedPosition" << endl;
+    //    cout << "in isCheckedPosition" << endl;
     const Board& board = *this;
   Player ourOwner = board.getPiece(position)->owner();
   Player theirOwner = Player(!ourOwner);
   Position temp;
   
   for (int i = 0; i < (int)board.width() * (int)board.height(); i++) {
-    cout << "in for loop in chededpos" << endl;
+ 
     temp.x = i % board.width();
     temp.y = i / board.height();
     if (board.getPiece(temp) != NULL) {
-      cout << "in not null" << endl;
+    
       if (board.getPiece(temp)->owner() == theirOwner) {
       //       if (validMove(temp ,position, board) > 0) {
-	cout << "in their owner" << endl;
-	cout << "valid move is: " << board.getPiece(temp)->validMove(temp, position, board) << endl;
+	//	cout << "piece its looking at is: " << board.getPiece(temp)->id() << " " << temp.x << " " << temp.y << endl;
+	//cout << "in loop that checks if current place has opposing teams owner" << endl;
+	//	cout << "king position is " << position.x << " " << position.y << endl;
+	
+	//	cout << "valid move is: " << board.getPiece(temp)->validMove(temp, position, board) << endl;
       if ((board.getPiece(temp)->validMove(temp ,position, board)) > 0) {
 	Prompts::check(theirOwner);
 	return MOVE_CHECK; 
@@ -54,7 +57,7 @@ using std::string;
   
 } 
 
-int ChessPiece::isCheckMate(Board& board) const {
+int ChessGame::isCheckMate() const {
 
   //loop through m_pieces i
   //if m_pieces.at(i)->owner() == positionOfKing->owner()
@@ -65,7 +68,61 @@ int ChessPiece::isCheckMate(Board& board) const {
   //call isCheckedPosition(positionOfKing(may be updated), board)
   //if its not checked, then put back piece into "end" position. use initPieces and stick it in end position and break out of loop. and return 0;
   //if we go through all of the pieces, return 1;
-  return 1;
+
+
+   
+    Position theirKing;
+    int kingFound = 0;
+    //get the kings position
+    //while (!kingFound) {    
+      for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
+	if (!kingFound) {
+	theirKing.x = i % this->width();
+	theirKing.y = i / this->height();
+	//cout << "searching for king at " << ourKing.x << " " << ourKing.y << endl;
+	if (this->getPiece(theirKing) != NULL) {
+	  if ((this->getPiece(theirKing)->id() == KING_ENUM)&&(this->getPiece(theirKing)->owner() == ((this->m_turn) % 2))) {
+	    //  cout << "king found at " << ourKing.x << " " << ourKing.y << endl;
+	    kingFound = 1;
+	  }
+	}
+      }
+      }
+
+      Player theirOwner(this->getPiece(theirKing)->owner());
+      Position temp;
+      Position inner;
+  for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
+ 
+    temp.x = i % this->width();
+    temp.y = i / this->height();
+    if (this->getPiece(temp) != NULL) {
+    
+      if (this->getPiece(temp)->owner() == theirOwner) {
+      //       if (validMove(temp ,position, board) > 0) {
+	//	cout << "piece its looking at is: " << board.getPiece(temp)->id() << " " << temp.x << " " << temp.y << endl;
+	//cout << "in loop that checks if current place has opposing teams owner" << endl;
+	//	cout << "king position is " << position.x << " " << position.y << endl;
+	
+	//	cout << "valid move is: " << board.getPiece(temp)->validMove(temp, position, board) << endl;
+
+	for (int j = 0; j < (int)this->width() * (int)this->height(); j++) {
+ 
+	  inner.x = j % (this->width());
+	  inner.y = j / (this->height());
+  
+
+	if ((this->getPiece(inner)->validMove(temp,inner, *this)) > 0) {
+	  if ((isCheckedPosition(theirKing) < 0)) {
+	    return -11;
+	  } 
+        }
+	}
+      }
+    }   
+  
+  }
+  return MOVE_CHECKMATE;
 }
 
 
@@ -76,12 +133,12 @@ int ChessPiece::properAloneMove(Position start, Position end) const {
   //cout << "proper spaces" << (properSpaces(start,end) > 0) << endl;
   //cout << "both" << ((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0))) << endl;
  
-  cout << "proper dir: " << (properDirection(getDirection(start,end)) > 0) << endl;
-  cout << "proper spaces " << (properSpaces(start,end) > 0) << endl;
-  cout << "both" << (((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0)) << endl;
+  //cout << "proper dir: " << (properDirection(getDirection(start,end)) > 0) << endl;
+  //cout << "proper spaces " << (properSpaces(start,end) > 0) << endl;
+  //cout << "both" << (((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0)) << endl;
   if ((((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0))) {
     //Prompts::illegalMove();
-    cout << "in loooooop" << endl;
+    //cout << "in loooooop" << endl;
     return SUCCESS;   
   }
   else {
@@ -91,6 +148,8 @@ int ChessPiece::properAloneMove(Position start, Position end) const {
 
 char ChessPiece::getDirection(Position start, Position end) const{
 
+ 
+  
   if (start.x == end.x) {
     return 'V';
   }
@@ -99,11 +158,11 @@ char ChessPiece::getDirection(Position start, Position end) const{
     return 'H';
   }
 
-  if ((end.x - start.x) == (end.y - start.y)) {
+  if (((int)end.x - (int)start.x) == ((int)end.y - (int)start.y)) {
     return '/';
   }
 
-  if ((end.x - start.x) == -(end.y - start.y)) {
+  if (((int)end.x - (int)start.x) == -((int)end.y - (int)start.y)) {
     return '\\';
   }
 
@@ -112,6 +171,8 @@ char ChessPiece::getDirection(Position start, Position end) const{
   }
 
   else {
+    cout << "Startx: " << start.x << "endx: " << end.x <<endl;
+    cout << "Starty: " << start.y << "endy: " << end.y <<endl;
     return '0';
   }
 }
@@ -248,6 +309,17 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   return SUCCESS;
 }
 
+bool ChessGame::gameOver() const{
+  if ((isCheckMate() > 0)) { //COME BACK AND PUT STALEMATE HERE IN AN OR STATEMENT
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
+
 
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end){
@@ -269,7 +341,7 @@ int ChessGame::makeMove(Position start, Position end){
     //    cout << "tempCode is: " << tempCode << endl;
       //if it's a valid move
   //int capturedID = -1;
-  Piece* captured;
+  Piece* captured = NULL;
   if (tempCode > 0) {
 
       //if (!checkedCode) {
@@ -287,22 +359,24 @@ int ChessGame::makeMove(Position start, Position end){
     Position ourKing;
     int kingFound = 0;
     //get the kings position
-    while (!kingFound) {
+    //while (!kingFound) {    
       for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
-    ourKing.x = i % this->width();
-    ourKing.y = i / this->height();
-    if (this->getPiece(ourKing) != NULL) {
-      if ((this->getPiece(ourKing)->id() == KING_ENUM)&&(this->getPiece(ourKing)->owner() == ((this->m_turn + 1) % 2))) {
-	cout << "king found" << endl;
-	kingFound = 1;
+	if (!kingFound) {
+	ourKing.x = i % this->width();
+	ourKing.y = i / this->height();
+	//cout << "searching for king at " << ourKing.x << " " << ourKing.y << endl;
+	if (this->getPiece(ourKing) != NULL) {
+	  if ((this->getPiece(ourKing)->id() == KING_ENUM)&&(this->getPiece(ourKing)->owner() == ((this->m_turn + 1) % 2))) {
+	    //  cout << "king found at " << ourKing.x << " " << ourKing.y << endl;
+	    kingFound = 1;
+	  }
+	}
       }
-    }
       }
-    }
 
     //     checkedCode = ChessPiece::isCheckedPosition(ourKing, *this);
        checkedCode = this->isCheckedPosition(ourKing);
-       cout << "checked code is: " << checkedCode;
+       //  cout << "checked code is: " << checkedCode;
   if (checkedCode == MOVE_CHECK) {
     
     Prompts::cantExposeCheck();
@@ -311,6 +385,12 @@ int ChessGame::makeMove(Position start, Position end){
     return MOVE_ERROR_CANT_EXPOSE_CHECK;
   }
 
+  //call isCheckMate. if its check mate then make the boards game over () true and return GAME_OVER
+  
+  if (gameOver()) {
+    return GAME_OVER;
+  }
+  
       return SUCCESS;
   } else {
 	switch (tempCode) {
