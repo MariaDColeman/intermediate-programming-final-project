@@ -1,3 +1,32 @@
 This is Maria Coleman and Farrah Lin's final project for CS120 SP17.
 
 yup
+*********************************************************************
+TEAM:
+Maria Coleman mcolem31
+Farrah Lin flin27
+
+
+*********************************************************************
+DESIGN:
+
+
+
+
+*********************************************************************
+COMPLETENESS:
+
+
+
+*********************************************************************
+TESTS:
+
+
+
+
+
+*********************************************************************
+SPECIAL INSTRUCTIONS:
+If using Putty, please change your text font to be 24 or larger so the chess board is easier to see.
+
+Part of the chess pieces may look a little cut off at the end becasue the unicode chess characters are a wide, depending on your font. This happens due to the pitch of the font, and thus, fonts with larger pitch will let you see more of the piece.  
