@@ -305,7 +305,7 @@ int ChessGame::makeMove(Position start, Position end){
 	   m_pieces.at(index(start)) = NULL;
 	   control = 0;
 	 }
-	 if (((m_pieces.at(index(start))->owner())== BLACK) && (end.y == 0)) {
+	 else if (((m_pieces.at(index(start))->owner())== BLACK) && (end.y == 0)) {
 	   blackpawn.x = end.x;
 	   blackpawn.y = 0;
 	   m_pieces.at(index(end)) = NULL;
