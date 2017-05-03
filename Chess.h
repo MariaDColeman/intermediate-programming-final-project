@@ -279,7 +279,7 @@ public:
     virtual void printMoveMessages(int code) override;
     virtual void run() override;
  protected:
-    int over;
+    int over = 0;
 };
 
 #endif

@@ -581,10 +581,10 @@ void ChessGame::run() {
     return;
   }
 
- while (!(gameOver() || !line.compare("q"))) { // while game is not over
+  while (!(gameOver() || !line.compare("q") || moveCode > 0)) { // while game is not over
    counter++;
    Position start;
-      Position end;
+   Position end;
 
     do { //while the current player needs to make a move
       char startx = 0;
@@ -687,15 +687,18 @@ void ChessGame::run() {
     //if not quitting or hasn't inputed movement places or move was invalid
 
      m_turn++;
+     cout << "below m++" << endl;
   }
 
  if (counter != 0) {
    m_turn--;
  }
- 
- if (line.compare("q")) {
+
+ cout << moveCode << endl;
+ if ((line.compare("q") != 0) && (moveCode != MOVE_STALEMATE)) {
    Prompts::win(this->playerTurn(), (m_turn + 1) / 2);
  }
+
  
  Prompts::gameOver();
  //while the game is not over or they don't want to quit
