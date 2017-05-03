@@ -278,6 +278,8 @@ public:
 
     virtual void printMoveMessages(int code) override;
     virtual void run() override;
+
+    friend class test_chess;
  protected:
     int over = 0;
 };

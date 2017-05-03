@@ -110,39 +110,7 @@ Position ChessGame::findKing(Player pl) {
       }
       return Position(-1,-1);
 }
-/*
-int ChessGame::inStalemate(Player pl) {
-  Position king = findKing(pl);
-  Position start;
-  Position end;
-  if (this->isCheckedPosition(king) != MOVE_CHECK) {
 
-    for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
-    start.x = i % this->width();
-    start.y = i / this->height();
-    //only look at things that are not null pointers
-    //and only look at pieces that are the player's
-    if (this->getPiece(start) != NULL) {
-      if (this->getPiece(start)->owner() == pl) {
-
-	//loop through all of the positions on the board
-	for (int j = 0; j < (int)this->width() * (int)this->height(); j++) {
-	  end.x = j % (this->width());
-	  end.y = j / (this->height());
-
-	  //if valid move, move it, and see if takes the player out of check
-	  if ((this->getPiece(start)->validMove(start,end, *this)) > 0) {
-	    return -100;
-	  }
-	}//went through all positions on board
-      }//else, is not the player's piece
-    }//else, is a null pointer
-    }//went through all the pieces in m pieces
-    return MOVE_STALEMATE;
-  }
-  return -101;
-}
-*/
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
    
@@ -296,6 +264,8 @@ int ChessGame::makeMove(Position start, Position end){
   //negative if out of bounds
   int retCode = Board::makeMove(start, end);
   int validMoveCode; //code from check if it's a valid move
+  Position whitepawn;
+  Position blackpawn;
   if (retCode==1) {
     retCode = m_pieces.at(index(start))->validMove(start, end, *this);
     //was valid move code
@@ -330,8 +300,29 @@ int ChessGame::makeMove(Position start, Position end){
      }
      else { //it wasn't in check before the move so keep going
        //actually move the pieces
+       int control = 1;
+       if ((m_pieces.at(index(start))->id())== PAWN_ENUM) {
+	 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == 7)) {
+	   whitepawn.x = end.x;
+	   whitepawn.y = 7;
+	   m_pieces.at(index(end)) = NULL;
+	   initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
+	   m_pieces.at(index(start)) = NULL;
+	   control = 0;
+	 }
+	 if (((m_pieces.at(index(start))->owner())== BLACK) && (end.y == 0)) {
+	   blackpawn.x = end.x;
+	   blackpawn.y = 0;
+	   m_pieces.at(index(end)) = NULL;
+	   initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), blackpawn);
+	   m_pieces.at(index(start)) = NULL;
+	   control = 0;
+	 }
+      }
+       if (control) {
        m_pieces.at(index(end)) = m_pieces.at(index(start));
        m_pieces.at(index(start)) = NULL;
+       }
      }
      ourKing= this->findKing(this->playerTurn());
 
@@ -366,16 +357,6 @@ int ChessGame::makeMove(Position start, Position end){
 	 over = 1;
 	 return MOVE_STALEMATE;
        }
-
-   
-     /*
-     if (inStalemate(Player(!(this->playerTurn()))) == MOVE_STALEMATE) {
-       cout << "stalemate " << endl;
-       over = 1;
-       return MOVE_STALEMATE;
-     }
-     */
-     
    
 
       return retCode;
@@ -581,7 +562,7 @@ void ChessGame::run() {
     return;
   }
 
-  while (!(gameOver() || !line.compare("q") || moveCode > 0)) { // while game is not over
+  while (!(gameOver() || !line.compare("q") || moveCode == MOVE_STALEMATE)) { // while game is not over
    counter++;
    Position start;
    Position end;
@@ -687,7 +668,7 @@ void ChessGame::run() {
     //if not quitting or hasn't inputed movement places or move was invalid
 
      m_turn++;
-     cout << "below m++" << endl;
+     cout << "move code is " << moveCode << endl;
   }
 
  if (counter != 0) {
@@ -750,8 +731,9 @@ void ChessGame::printMoveMessages(int code) {
   } 
 }
 
-
+/*
 int main() {
     ChessGame chess;
     chess.run();
 }
+*/
