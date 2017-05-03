@@ -116,7 +116,7 @@ public:
     virtual bool gameOver() const = 0 ;
 
 
-    virtual void printMoveMessages(int code) {return;};
+    virtual void printMoveMessages(int) {return;};
     
     
 protected:

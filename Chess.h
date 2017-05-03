@@ -179,7 +179,7 @@ public:
     int validMove(Position start, Position end,
 		  const Board& board) const override { return ChessPiece::validMove(start, end, board); }
     virtual int properDirection(char dir) const override {
-      cout << dir << endl;
+      //cout << dir << endl;
       return (dir == 'L');
     }
     virtual int properSpaces(Position start, Position end) const override{

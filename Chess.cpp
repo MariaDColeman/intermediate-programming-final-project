@@ -54,7 +54,7 @@ using std::string;
 //pl the player to check if they are under checkmate
 //returns move_ checkmate if under checkmate, -11 if not 
 int ChessGame::isUnderCheckMate(Player pl) {   
-  Position King = this->findKing(pl);
+  // Position King = this->findKing(pl);
   Position start;
   Position end;
   
@@ -246,12 +246,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
 }
 
 bool ChessGame::gameOver() const{
-  //if ((isCheckMate() > 0)) { //COME BACK AND PUT STALEMATE HERE IN AN OR STATEMENT
-  //return true;
-  //   }
-//else {
     return over;
-// }
 }
 
 
@@ -346,7 +341,7 @@ int ChessGame::makeMove(Position start, Position end){
 
       //det captured
      if (captured != NULL) {
-       Prompts::capture(m_pieces.at(index(start))->owner());
+       //Prompts::capture(m_pieces.at(index(end))->owner());
        retCode = MOVE_CAPTURE;
      }
 
@@ -393,7 +388,7 @@ int ChessGame::setUpSavedBoard(string filename) {
     input >> gameIdentifier;
     input >> lastTurn;
     m_turn = lastTurn + 1;
-    cout << "lastTurn " << lastTurn << " mturn: " << m_turn << endl;
+    //cout << "lastTurn " << lastTurn << " mturn: " << m_turn << endl;
     //for (int i = 0; i!= EOF; i++) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     while (input >> P) {
       //cout << P << endl; 
@@ -675,7 +670,7 @@ void ChessGame::run() {
    m_turn--;
  }
 
- cout << moveCode << endl;
+ //cout << moveCode << endl;
  if ((line.compare("q") != 0) && (moveCode != MOVE_STALEMATE)) {
    Prompts::win(this->playerTurn(), (m_turn + 1) / 2);
  }
@@ -731,9 +726,3 @@ void ChessGame::printMoveMessages(int code) {
   } 
 }
 
-/*
-int main() {
-    ChessGame chess;
-    chess.run();
-}
-*/
