@@ -19,32 +19,6 @@ using std::ifstream;
 using std::ostream;
 using std::string;
 
-/*   //theoretically would also handle the exposing check part, using vers in chess.h
-//returns success if valid, else move error codes
-int ChessPiece::validMove(Position start, Position end, const Board& board) const override {
-   //conditions if capturing
-   if (board.getPiece(end) != NULL) {
-        if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-          return MOVE_ERROR_BLOCKED;
-        }
-   } //end of conditions if capturing
-   //checking if it's a valid move based on specific piece type movement patterns
-    if (properAloneMove(start,end) >= 0) {
-      int code = noPeopleInWay(start, end, board);
-      if (code > 0) {
-        Position king = board.findKing(board->playerTurn());
-        if (board->isCheckedPosition(king) == MOVE_CHECK) {
-          code = MOVE_ERROR_MUST_HANDLE_CHECK;
-        }
-      }
-      return code;
-    }
-    else {
-      return MOVE_ERROR_ILLEGAL;
-    }
-}*/
-
-
 
 
 //king is the position of the king to be checked
@@ -63,10 +37,12 @@ int ChessPiece::validMove(Position start, Position end, const Board& board) cons
     //piece is not null, and it's the opponent's piece
     if (board.getPiece(start) != NULL) {
       if (board.getPiece(start)->owner() == theirOwner) {
-	//	cout << "piece its looking at is: " << board.getPiece(temp)->id() << " " << temp.x << " " << temp.y << endl;//
+	//cout << "piece its looking at is: " << board.getPiece(start)->id() << " " << start.x << " " << start.y << endl;//
 	//check to see if it can get to player's king
-	if ((board.getPiece(start)->validMove(start,king, board)) > 0) {
+	//	cout<< "validMove is returning " << ((board.getPiece(start)->validMove(start,king, board))) <<endl;
+		if ((board.getPiece(start)->validMove(start,king, board)) > 0) {
 	  //Prompts::check(theirOwner);
+		  //	  cout << "returning move_check" << endl;
 	return MOVE_CHECK; 
 	}
       }//else not opp piece
@@ -81,6 +57,7 @@ int ChessGame::isUnderCheckMate(Player pl) {
   Position King = this->findKing(pl);
   Position start;
   Position end;
+  
 
   for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
     start.x = i % this->width();
@@ -133,7 +110,39 @@ Position ChessGame::findKing(Player pl) {
       }
       return Position(-1,-1);
 }
+/*
+int ChessGame::inStalemate(Player pl) {
+  Position king = findKing(pl);
+  Position start;
+  Position end;
+  if (this->isCheckedPosition(king) != MOVE_CHECK) {
 
+    for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
+    start.x = i % this->width();
+    start.y = i / this->height();
+    //only look at things that are not null pointers
+    //and only look at pieces that are the player's
+    if (this->getPiece(start) != NULL) {
+      if (this->getPiece(start)->owner() == pl) {
+
+	//loop through all of the positions on the board
+	for (int j = 0; j < (int)this->width() * (int)this->height(); j++) {
+	  end.x = j % (this->width());
+	  end.y = j / (this->height());
+
+	  //if valid move, move it, and see if takes the player out of check
+	  if ((this->getPiece(start)->validMove(start,end, *this)) > 0) {
+	    return -100;
+	  }
+	}//went through all positions on board
+      }//else, is not the player's piece
+    }//else, is a null pointer
+    }//went through all the pieces in m pieces
+    return MOVE_STALEMATE;
+  }
+  return -101;
+}
+*/
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
    
@@ -164,8 +173,8 @@ char ChessPiece::getDirection(Position start, Position end) const{
     return 'L';
   }
   else {
-    cout << "get dir Startx: " << start.x << "endx: " << end.x <<endl;//
-    cout << "get dir Starty: " << start.y << "endy: " << end.y <<endl;//
+    //cout << "get dir Startx: " << start.x << "endx: " << end.x <<endl;//
+    //cout << "get dir Starty: " << start.y << "endy: " << end.y <<endl;//
     return '0';
   }
 }
@@ -239,7 +248,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       temp.x = tempStart.x + i;
       temp.y = tempStart.y + i;
       
-      cout << "checking " << temp.x << " " << temp.y<< endl;//
+      // cout << "checking " << temp.x << " " << temp.y<< endl;//
       //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
        
       if (board.getPiece(temp) != NULL) {
@@ -273,7 +282,7 @@ bool ChessGame::gameOver() const{
   //return true;
   //   }
 //else {
-    return false;
+    return over;
 // }
 }
 
@@ -282,7 +291,7 @@ bool ChessGame::gameOver() const{
 
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end){
-  cout<<"making move from " <<start.x<<","<<start.y<< " " <<end.x<<","<<end.y<<endl;
+  //cout<<"making move from " <<start.x<<","<<start.y<< " " <<end.x<<","<<end.y<<endl;
   
   //negative if out of bounds
   int retCode = Board::makeMove(start, end);
@@ -299,13 +308,15 @@ int ChessGame::makeMove(Position start, Position end){
      captured = m_pieces.at(index(end));
      Position ourKing = this->findKing(this->playerTurn());
      
-     cout<<"ourking is at " <<ourKing.x<<","<<ourKing.y<<endl;//
-     int underCheck = this->isCheckedPosition(ourKing)== MOVE_CHECK;//
-       cout <<" is our king already under check?" << underCheck<<endl;//
+     //cout<<"ourking is at " <<ourKing.x<<","<<ourKing.y<<endl;//
+     //cout << "is checked position of ourKing " << this->isCheckedPosition(ourKing) << endl;
+     int underCheck = this->isCheckedPosition(ourKing) == MOVE_CHECK;//
+     
+     //cout <<" is our king already under check?" << underCheck<<endl;//
      
      //if its already in check before moving
      if (this->isCheckedPosition(ourKing)== MOVE_CHECK) {
-       cout<<"must handle check" <<endl;//
+       // cout<<"must handle check" <<endl;//
        //actually move the pieces
        m_pieces.at(index(end)) = m_pieces.at(index(start));
        m_pieces.at(index(start)) = NULL;
@@ -324,12 +335,21 @@ int ChessGame::makeMove(Position start, Position end){
      }
      ourKing= this->findKing(this->playerTurn());
 
-      //determines if under check
+      //determines if under check for the first time
      if (this->isCheckedPosition(ourKing) == MOVE_CHECK) {
        checkedCode = MOVE_ERROR_CANT_EXPOSE_CHECK;
        //Prompts::cantExposeCheck();
        m_pieces.at(index(start)) = m_pieces.at(index(end));
        m_pieces.at(index(end)) = captured;
+
+       if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
+	 cout << "checkmate" << endl;
+	 over = 1;
+	 return MOVE_CHECKMATE;
+       }
+
+
+       
        return checkedCode;
      } //end cases under check
 
@@ -340,11 +360,23 @@ int ChessGame::makeMove(Position start, Position end){
      }
 
       //come back and do when curr player checkmates someone else
-  
-      /*
-  if (gameOver()) {
-    return GAME_OVER;
-    }*/
+
+     if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
+	 cout << "stalemate" << endl;
+	 over = 1;
+	 return MOVE_STALEMATE;
+       }
+
+   
+     /*
+     if (inStalemate(Player(!(this->playerTurn()))) == MOVE_STALEMATE) {
+       cout << "stalemate " << endl;
+       over = 1;
+       return MOVE_STALEMATE;
+     }
+     */
+     
+   
 
       return retCode;
   } //else was invalid already
@@ -379,7 +411,8 @@ int ChessGame::setUpSavedBoard(string filename) {
   if (input.is_open()) {
     input >> gameIdentifier;
     input >> lastTurn;
-    m_turn = lastTurn;
+    m_turn = lastTurn + 1;
+    cout << "lastTurn " << lastTurn << " mturn: " << m_turn << endl;
     //for (int i = 0; i!= EOF; i++) { //CHANGE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     while (input >> P) {
       //cout << P << endl; 
@@ -421,7 +454,7 @@ int Board::saveBoard(string filename) {
   std::ofstream output;
   output.open(filename);
   output << "chess" <<endl;
-  output << m_turn <<endl;
+  output << m_turn-1 <<endl;
 
   for (unsigned int i = 0; i < m_height * m_width; i++) {
     if (m_pieces.at(i) != NULL) {
@@ -537,18 +570,20 @@ int ChessGame::getSetUp() {
 
 
 void ChessGame::run() {
-  string line;
+  string line = "";
   string filename;
   int nonMoveInput = 0; //a controlling factor for getting player input
   int wantsBoard = 1; //default should be 0, change before submitting
   int moveCode = 0;
+  int counter = 0;
   
   if (this->getSetUp() == LOAD_FAILURE) {
     return;
   }
 
- do { // while game is not over
-      Position start;
+ while (!(gameOver() || !line.compare("q"))) { // while game is not over
+   counter++;
+   Position start;
       Position end;
 
     do { //while the current player needs to make a move
@@ -556,7 +591,7 @@ void ChessGame::run() {
       char starty = 'a';
       char endx = 0;
       char endy = 'a';
-      int moveCode = 0;
+      moveCode = 0;
       nonMoveInput = 0; //a controlling factor for getting player input to make a move
 
       //prints current player prompt
@@ -652,7 +687,17 @@ void ChessGame::run() {
     //if not quitting or hasn't inputed movement places or move was invalid
 
      m_turn++;
-  } while (!(gameOver() || !line.compare("q")));
+  }
+
+ if (counter != 0) {
+   m_turn--;
+ }
+ 
+ if (line.compare("q")) {
+   Prompts::win(this->playerTurn(), (m_turn + 1) / 2);
+ }
+ 
+ Prompts::gameOver();
  //while the game is not over or they don't want to quit
 }
 

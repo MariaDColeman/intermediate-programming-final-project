@@ -216,7 +216,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override {return ChessPiece::validMove(start, end, board); }
     virtual int properDirection(char dir) const override {
-       cout << "                                     ITS THE QUEEN" << dir << endl;
+      //       cout << "                                     ITS THE QUEEN" << dir << endl;
       return (dir != 'L' && dir != '0');
     }
     virtual int properSpaces(Position, Position) const override{
@@ -262,6 +262,7 @@ public:
     Position findKing(Player pl);
     int isCheckedPosition(Position king);
     int isUnderCheckMate(Player pl); 
+    //int inStalemate(Player pl);
     virtual int setUpSavedBoard(string filename) override; 
     //virtual int saveBoard(string filename) override;    
     // Whether the chess game is over
@@ -277,6 +278,8 @@ public:
 
     virtual void printMoveMessages(int code) override;
     virtual void run() override;
+ protected:
+    int over;
 };
 
 #endif
