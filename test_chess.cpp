@@ -15,12 +15,12 @@ public:
  
   test_chess() {
     cout<<"new"<<endl;
-    c1 = ChessGame();
+    //c1 = ChessGame();
     //cout<<"c1"<<endl;
-    //c1.setupBoard();
+    c1.setupBoard();
     cout<<"setuo"<<endl;
     c1.m_turn = 1;
-    cout<<"turn"<<endl;
+    cout<<"turn"<< endl;
   }
 
   void newGameIsNotOver() {
@@ -30,7 +30,7 @@ public:
   }
 
   void validPawn() {
-    Position start(0,6);
+    Position start(0,1);
     Position end(0,2);
     int i = c1.makeMove(start, end);
     cout<<"passed" <<i<<endl;
