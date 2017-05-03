@@ -143,15 +143,7 @@ Position ChessGame::findKing(Player pl) const{
 
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
-
    
-  //cout << "Proper dir" << (properDirection(getDirection(start,end)) > 0)  << endl;
-  //cout << "proper spaces" << (properSpaces(start,end) > 0) << endl;
-  //cout << "both" << ((properDirection(getDirection(start,end) > 0) && (properSpaces(start, end) > 0))) << endl;
- 
-  //cout << "proper dir: " << (properDirection(getDirection(start,end)) > 0) << endl;
-  //cout << "proper spaces " << (properSpaces(start,end) > 0) << endl;
-  //cout << "both" << (((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0)) << endl;
   if ((((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0))) {
     //Prompts::illegalMove();
     //cout << "in loooooop" << endl;
@@ -219,11 +211,8 @@ int ChessPiece::getSpaces(Position start, Position end) const {
 		       
 }
 
-
+//returns error codes or success
 int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) const  {
-  //  int ChessPiece::noPeopleInWay(Position start, Position end) const  {
-  //char directionCode;
-  //int backwards = 0; //0 if not backwards(to the right, up, up-right, up-left)
   Position tempStart = start;
   Position tempEnd = end;
   
@@ -231,13 +220,9 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   int spaces = getSpaces(start, end);
   int backwards = 0;
 
-  //cout << "dir is ahhh " << dir << endl;
-
-  
   if (spaces < 0) {
     //going in the negative x or the negative y
     backwards = 1;
-    //cout << "made backwards 1" << endl;
   }
 
   if (backwards) {
@@ -245,20 +230,11 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
     tempEnd = start;
   }
 
-  //cout << "tempStart.y = "<<  tempStart.y << endl;
-  //cout << "tempEnd.y = " << tempEnd.y << endl;
-  
-
-  
   if (dir == 'H') {
     for (int i = (int) tempStart.x + 1; i < (int) tempEnd.x; i++ ) {
       Position temp;
       temp.x = i;
       temp.y = tempStart.y;
-      
-      //cout << "checking " << temp.x << " " << temp.y<< endl;//
-      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
-       
       if (board.getPiece(temp) != NULL) {
 	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
@@ -271,10 +247,6 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       Position temp;
       temp.x = tempStart.x;
       temp.y = i;
-      
-      //cout << "checking " << temp.x << " " << temp.y<< endl;//
-      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
-       
       if (board.getPiece(temp) != NULL) {
 	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
@@ -300,12 +272,7 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
   }
 
  if (dir == '\\') {
-   //cout << "thinks dir is " << dir << " and backwards is " << backwards<<endl;//
-   //cout << "starty and endy is " << tempStart.y << " " <<  tempEnd.y <<endl;//
-   //cout << " in \\" << endl;
-   //   for (int i = 1; i < (int) (tempEnd.y) - (int) (tempStart.y); i++ ) {
      for (int i = 1; i < (int) (tempStart.y) - (int) (tempEnd.y); i++ ) {
-       //  cout << "in for loop" << endl;
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y - i;
@@ -319,19 +286,17 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       }
     }
   }
-
- 
  
   return SUCCESS;
 }
 
 bool ChessGame::gameOver() const{
-  if ((isCheckMate() > 0)) { //COME BACK AND PUT STALEMATE HERE IN AN OR STATEMENT
-    return true;
-  }
-  else {
+  //if ((isCheckMate() > 0)) { //COME BACK AND PUT STALEMATE HERE IN AN OR STATEMENT
+  //return true;
+  //   }
+//else {
     return false;
-  }
+// }
 }
 
 
@@ -390,6 +355,8 @@ int ChessGame::makeMove(Position start, Position end){
       }
       }
 
+
+      /*
     //     checkedCode = ChessPiece::isCheckedPosition(ourKing, *this);
        checkedCode = this->isCheckedPosition(ourKing);
        //  cout << "checked code is: " << checkedCode;
@@ -405,7 +372,7 @@ int ChessGame::makeMove(Position start, Position end){
   
   if (gameOver()) {
     return GAME_OVER;
-  }
+    }*/
   
       return SUCCESS;
   } else {
@@ -587,22 +554,8 @@ Terminal::colorFg(1, Terminal::BLACK);
     Terminal::colorFg(1, Terminal::BLACK);
     cout << endl;
   }
-  
-  cout << "  A B C D E F G H"<<endl;
-
-  /*  for (int i = m_height - 1; i >= 0; i--) {
-    for (int j=0; j < m_width; j++) {
-      if (m_pieces.at((i*m_width) + j) != NULL) {
-	cout << m_pieces[(i*m_width) + j]->owner() << m_pieces[(i*m_width) + j]->id();
-	cout << " ";
-    }
-      else {
-	cout << "__ ";
-      }
-  }
-    cout << endl;
-  }
-  */
+   cout << "  A B C D E F G H"<<endl;
+   //reset
   Terminal::colorFg(1, Terminal::WHITE);
 }
 

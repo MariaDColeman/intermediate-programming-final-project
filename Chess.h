@@ -63,72 +63,16 @@ class ChessPiece : public Piece {
  // int isCheckMate(Board& board) const; 
 
  virtual int validMove(Position start, Position end, const Board& board) const override {
-    //properDirection() ? //if empty board would it be allowed just moving itself. rewritten in every type of ChessPiece
-    //getDirection()
-    //noPeopleInWay()?
-    //if whats caling this is a pawn, call get direction() if its white them get direction has to be / with +1 space or \ with -1 space and reversed if black (s0 -1 space and +1 space) then return SUCCESS
-
-    //Position position;
-    //    int check = isCheckedPosition(position, board);
-
-
-if (board.getPiece(end) != NULL) {
+   //conditions if capturing
+   if (board.getPiece(end) != NULL) {
 	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-	  // Prompts::blocked();
-	  // cout << "in same owner" << endl;
 	  return MOVE_ERROR_BLOCKED;
-      }
+        }
+   } //end of conditions if capturing
 
-    
-    if(board.getPiece(start)->id() == PAWN_ENUM) {
-      char tempDir = getDirection(start,end);
-      char tempSpaces = getSpaces(start,end);
-      /*
-      if (board.getPiece(end) != NULL) {
-	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-	  // Prompts::blocked();
-	  cout << "in same owner" << endl;
-	  return MOVE_ERROR_BLOCKED;
-      }
-      */
-
-      if (board.getPiece(start)->owner() == WHITE) {
-	if ((tempDir == '/') && (tempSpaces == 1)) {
-	  return SUCCESS;
-	}
-	if ((tempDir == '\\') && (tempSpaces == -1)) {
-	  return SUCCESS;
-	}
-	
-	else {
-	  // Prompts::illegalMove();
-	  return MOVE_ERROR_ILLEGAL;
-	}
-	
-      }
-      if (board.getPiece(start)->owner() == BLACK) {
-	if ((tempDir == '/') && (tempSpaces == -1)) {
-	  return SUCCESS;
-	}
-	if ((tempDir == '\\') && (tempSpaces == 1)) {
-	  return SUCCESS;
-	}
-	else {
-	  //Prompts::illegalMove();
-	  return MOVE_ERROR_ILLEGAL;
-	}
-      }
-      }
-    
-    }
-    
+   //checking if it's a valid move based on specific piece type movement patterns
     if (properAloneMove(start,end) >= 0) {
-      //cout << "is proper alone move, but is it no people in way?" << endl;//
-      //cout << noPeopleInWay(start, end, board) << endl;
-      return noPeopleInWay(start, end, board); //actually if noPeopleInWay() >= 0
-      //personInDestination() 
-      //if m_pieces.at(position end) != NULL
-      // remove m_pieces.at(end)
+      return noPeopleInWay(start, end, board); 
     }
     else {
       return MOVE_ERROR_ILLEGAL;
@@ -151,11 +95,7 @@ protected:
 public:
     // This method will have piece-specific logic for checking valid moves
     // It may also call the generic Piece::validMove for common logic
-    int validMove(Position start, Position end,
-        const Board& board) const override {
-      return ChessPiece::validMove(start, end, board);
-      //return SUCCESS;
-    }
+
     virtual int properDirection(char dir) const override {
       //   cout << "pawn checking proper direction" << endl;
       return (dir == 'V');
@@ -175,6 +115,40 @@ public:
       } else {
 	return (getSpaces(start, end) == 1);
       }
+    }
+
+    int validMove(Position start, Position end,
+        const Board& board) const override {
+
+      char tempDir = getDirection(start,end);
+      char tempSpaces = getSpaces(start,end);
+
+      //flip spaces if black
+      if (board.getPiece(start)->owner() != WHITE) {
+	tempSpaces = -(int)tempSpaces;
+      }
+      
+      //if blocked by own piece
+      if (board.getPiece(end) != NULL) {
+        if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
+        return MOVE_ERROR_BLOCKED;
+	}
+      }
+
+      //if trying to capture
+      if (board.getPiece(end) != NULL) {
+        if ((tempDir == '/') && (tempSpaces == 1)) {
+          return SUCCESS;
+        }
+        if ((tempDir == '\\') && (tempSpaces == -1)) {
+          return SUCCESS;
+        }
+        else {
+          return MOVE_ERROR_ILLEGAL;
+        }
+      }
+
+      return ChessPiece::validMove(start, end, board);
     }
 };
 
