@@ -7,7 +7,7 @@ unittest: test_chess.o Chess.o
 
 Board.o: Game.h
 Chess.o: Game.h Chess.h Prompts.h
-main.o: Game.h Chess.h Prompts.h main.cpp
+main.o: Game.h Chess.h Prompts.h main.cpp Chess.cpp
 test_chess.o: test_chess.cpp Chess.cpp
 
 clean:

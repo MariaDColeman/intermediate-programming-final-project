@@ -1,7 +1,7 @@
 #include <cassert>
 #include "Chess.h"
 #include "Terminal.h"
-
+#include "Game.h"
 
 
 /*
