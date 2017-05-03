@@ -3,8 +3,19 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+#include <ostream>
+#include <sstream>
+#include <fstream>
+#include <cmath>
+#include <string>
 
 using std::string;
+using std::cin;
+using std::cout;
+using std::endl;
 
 // The list of players
 enum Player {
@@ -104,7 +115,8 @@ public:
     // Returns "true" if the game is over
     virtual bool gameOver() const = 0 ;
 
-    
+
+    virtual void printMoveMessages(int code) {return;};
     
     
 protected:

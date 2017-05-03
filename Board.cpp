@@ -104,7 +104,7 @@ int Board::makeMove(Position start, Position end) {
   }
 }
 
-void Board::run() {
+void Board::run() { /*
   int initialInput = 0;
   string line;
   string filename;
@@ -227,8 +227,9 @@ void Board::run() {
 	//cout << startx << " " << starty <<endl;// error checking
 	//cout << endx << " " << endy <<endl;//
 	//	cout << makeMove(start,end) << endl;
+	int moveCode = makeMove(start,end);
 	
-    } while (!line.compare("q") || nonMoveInput || makeMove(start, end) < 0);
+    } while (!line.compare("q") || nonMoveInput || moveCode < 0);
     //while curr player needs to make a move
     //if not quitting or hasn't inputed movement places or move was invalid
   
@@ -236,5 +237,5 @@ void Board::run() {
   } while (!(gameOver() || !line.compare("q")));
  //while the game is not over or they don't want to quit
 
-
+ */
 }

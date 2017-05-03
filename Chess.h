@@ -54,14 +54,11 @@ class ChessPiece : public Piece {
  ChessPiece(Player owner, int id) : Piece(owner, id) {}
 
  public:
-  //peopleInWay() ? function that goes throough desired path to see if anything is in the path . for all excep knight
-  //returns a 2 if no people are in the way. returns a -2 if there are people in the way
-  //virtual int noPeopleInWay(Position start, Position end, const Board& board); 
+
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const;
- //int isCheckedPosition(Position position, const Board& board) const;
- // int isCheckMate(Board& board) const; 
-
+ 
+ //returns success if valid, else move error codes
  virtual int validMove(Position start, Position end, const Board& board) const override {
    //conditions if capturing
    if (board.getPiece(end) != NULL) {
@@ -72,7 +69,8 @@ class ChessPiece : public Piece {
 
    //checking if it's a valid move based on specific piece type movement patterns
     if (properAloneMove(start,end) >= 0) {
-      return noPeopleInWay(start, end, board); 
+      int code = noPeopleInWay(start, end, board);
+      return code;
     }
     else {
       return MOVE_ERROR_ILLEGAL;
@@ -97,19 +95,18 @@ public:
     // It may also call the generic Piece::validMove for common logic
 
     virtual int properDirection(char dir) const override {
-      //   cout << "pawn checking proper direction" << endl;
       return (dir == 'V');
     }
     virtual int properSpaces(Position start, Position end) const override{
-      //MAKE SURE TO COME BACK AND DEAL WITH FIRST MOVE
-
+      //first move
       if ((m_owner == BLACK) && (start.y == 6)) {
 	return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
       }
       else if ((m_owner == WHITE) && (start.y == 1)) {
 	return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
       }
-      
+
+      //normal moves
       if (m_owner == BLACK) {
 	return (getSpaces(start, end) == -1);
       } else {
@@ -148,6 +145,7 @@ public:
         }
       }
 
+      //check normal moves
       return ChessPiece::validMove(start, end, board);
     }
 };
@@ -260,9 +258,10 @@ public:
     // Setup the chess board with its initial pieces
     virtual void setupBoard() override;
 
-    Position findKing(Player pl) const;
-    int isCheckedPosition(Position position) const;
-    int isCheckMate() const; 
+    int getSetUp();
+    Position findKing(Player pl);
+    int isCheckedPosition(Position king);
+    int isUnderCheckMate(Player pl); 
     virtual int setUpSavedBoard(string filename) override; 
     //virtual int saveBoard(string filename) override;    
     // Whether the chess game is over
@@ -276,7 +275,8 @@ public:
     //print the chess game board
     //virtual void printBoard() override;
 
-    //virtual int run() override;
+    virtual void printMoveMessages(int code) override;
+    virtual void run() override;
 };
 
 #endif
