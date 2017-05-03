@@ -1,7 +1,7 @@
 #include "Chess.h"
 
 int main() {
-ChessGame chess
+  ChessGame chess;
   chess.run();
 
 }

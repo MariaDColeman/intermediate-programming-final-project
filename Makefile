@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -std=c++11 -g
 
-chess: Chess.o Board.o
-	$(CXX) $(CXXFLAGS) Chess.o Board.o -o chess
+chess: Chess.o Board.o main.o
+	$(CXX) $(CXXFLAGS) Chess.o Board.o main.o -o chess
 unittest: test_chess.o Chess.o
 
 Board.o: Game.h
