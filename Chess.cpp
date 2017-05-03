@@ -125,6 +125,22 @@ int ChessGame::isCheckMate() const {
   return MOVE_CHECKMATE;
 }
 
+Position ChessGame::findKing(Player pl) const{
+    Position king;
+      for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
+        king.x = i % this->width();
+        king.y = i / this->height();
+        //cout << "searching for king at " << king.x << " " << king.y << endl;
+        if (this->getPiece(king) != NULL) {
+          if ((this->getPiece(king)->id() == KING_ENUM)&&(this->getPiece(king)-\
+>owner() == pl)) {
+            return king;
+          }
+        }
+      }
+      return Position(-1,-1);
+}
+
 
 int ChessPiece::properAloneMove(Position start, Position end) const {
 

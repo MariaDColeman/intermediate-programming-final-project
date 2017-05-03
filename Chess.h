@@ -133,7 +133,7 @@ if (board.getPiece(end) != NULL) {
     else {
       return MOVE_ERROR_ILLEGAL;
     }
-  }
+ }
 
   char getDirection(Position start, Position end) const;
   int getSpaces(Position start, Position end) const;
@@ -286,6 +286,7 @@ public:
     // Setup the chess board with its initial pieces
     virtual void setupBoard() override;
 
+    Position findKing(Player pl) const;
     int isCheckedPosition(Position position) const;
     int isCheckMate() const; 
     virtual int setUpSavedBoard(string filename) override; 
