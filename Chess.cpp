@@ -54,7 +54,7 @@ using std::string;
 //pl the player to check if they are under checkmate
 //returns move_ checkmate if under checkmate, -11 if not 
 int ChessGame::isUnderCheckMate(Player pl) {   
-  // Position King = this->findKing(pl);
+ 
   Position start;
   Position end;
   
@@ -115,8 +115,6 @@ Position ChessGame::findKing(Player pl) {
 int ChessPiece::properAloneMove(Position start, Position end) const {
    
   if ((((properDirection(getDirection(start,end))) > 0) && ((properSpaces(start, end)) > 0))) {
-    //Prompts::illegalMove();
-    //cout << "in loooooop" << endl;
     return SUCCESS;   
   }
   else {
@@ -141,8 +139,6 @@ char ChessPiece::getDirection(Position start, Position end) const{
     return 'L';
   }
   else {
-    //cout << "get dir Startx: " << start.x << "endx: " << end.x <<endl;//
-    //cout << "get dir Starty: " << start.y << "endy: " << end.y <<endl;//
     return '0';
   }
 }
@@ -191,7 +187,6 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       temp.x = i;
       temp.y = tempStart.y;
       if (board.getPiece(temp) != NULL) {
-	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -203,7 +198,6 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       temp.x = tempStart.x;
       temp.y = i;
       if (board.getPiece(temp) != NULL) {
-	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -215,12 +209,8 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y + i;
-      
-      // cout << "checking " << temp.x << " " << temp.y<< endl;//
-      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
-       
+            
       if (board.getPiece(temp) != NULL) {
-	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -231,12 +221,8 @@ int ChessPiece::noPeopleInWay(Position start, Position end, const Board& board) 
       Position temp;
       temp.x = tempStart.x + i;
       temp.y = tempStart.y - i;
-      
-      //cout << "checking in \\" << temp.x << " " << temp.y<< endl;//
-      //cout << "piece is "<<board.getPiece(temp)->owner()<< endl;//
-       
+             
       if (board.getPiece(temp) != NULL) {
-	//Prompts::blocked();
 	return MOVE_ERROR_BLOCKED;
       }
     }
@@ -278,8 +264,8 @@ Position ChessGame::findRook(Player pl, int skipFirstRookCode) {
 int ChessGame::isCastling(Position start, Position end) {
 
   //Castling is indicated by the user moving the king 2 spaces toward a rook in the appropriate circumstances.
-  //maybe also check if the king and rook havent moved yet during the game.
-  //use get direction and getspaces!
+  //also check if the king and rook havent moved yet during the game.
+  
 
   if (this->getPiece(start) == NULL) {
     return 0; //not trying to castle
@@ -290,14 +276,9 @@ int ChessGame::isCastling(Position start, Position end) {
     return 0; //not trying to castle
   }
 
-  
-  
-
 
   Player kingOwner = this->getPiece(start)->owner();
-
   Position rook = findRook(kingOwner, 0);
-
   char dirKingWantsToMove = this->getPiece(start)->getDirection(start, end);
   char dirFromKingToRook = this->getPiece(start)->getDirection(start, rook);
   int spacesKingWantsToMove = this->getPiece(start)->getSpaces(start, end);
@@ -307,30 +288,36 @@ int ChessGame::isCastling(Position start, Position end) {
     rook = findRook(kingOwner, 1);
     dirFromKingToRook = this->getPiece(start)->getDirection(start, rook);
     spacesFromKingToRook = this->getPiece(start)->getSpaces(start, rook);
+  
     if ((dirKingWantsToMove != dirFromKingToRook)  || (spacesKingWantsToMove * spacesFromKingToRook < 0)) {
-      return 0; //not trying to castle
+        return 0; //not trying to castle
     }
   }
+  
   //now we know direction king wants to move is in the rooks direction and that is it moving towards it
-  //now check if it is 2 spaces in that direction towardssss it
-  if ((spacesFromKingToRook != 2) || (spacesFromKingToRook) != -2) {
+  //now check if it is 2 spaces in that direction towards it
+    if (!((spacesKingWantsToMove == 2) || (spacesKingWantsToMove) == -2)) {
     return 0; //not trying to castle
   }
 
   //check if the king and rook havent moved yet during the game
-  if ((this->getPiece(start)->hasMoved != 0) || (this->getPiece(rook)->hasMoved != 0)) {
-    return MOVE_ERROR_CANT_CASTLE; //MAYBE
+  if ((this->getPiece(start)->getHasMoved() != 0) || (this->getPiece(rook)->getHasMoved() != 0)) {
+    cout << "thinks they have moved" << endl;
+    return 0; //not trying to castle
   }
 
   //check if anything is in between them
   int nothingInBetween = this->getPiece(start)->noPeopleInWay(start, rook, *this);
   if (nothingInBetween == MOVE_ERROR_BLOCKED) {
-    return MOVE_ERROR_CANT_CASTLE; //MAYBE COME BACK AND CHANGE THIS
+    //return MOVE_ERROR_CANT_CASTLE; //MAYBE COME BACK AND CHANGE THIS
+    cout << "people in way" << endl;
+    return 0; //not trying to castle;
   }
   
   //check if the king is in check
   if (this->isCheckedPosition(start) == MOVE_CHECK) {
     return MOVE_ERROR_CANT_CASTLE;
+    //return 0; //castling comes lower on the list of errors
   }
 
   //Check what "The king moves through a square that is attacked by a piece of the opponent" means from link
@@ -389,16 +376,26 @@ int ChessGame::makeMove(Position start, Position end){
   
   Position whitepawn;
   Position blackpawn;
+  int castlingCode;
   if (retCode==1) {
+    castlingCode = isCastling(start,end);
+    cout << castlingCode << endl;
+    if (castlingCode == 0) {
     retCode = m_pieces.at(index(start))->validMove(start, end, *this);
-    //was valid move code
+    }
+    else {
+      return castlingCode;
+    }
+      
   }
   int checkedCode = 0; 
   Piece* captured = NULL;
+  int control;
   //if it's a valid move from gen board and piece move patterns
   if (retCode > 0) { 
     //was valid move code
      captured = m_pieces.at(index(end));
+     
      Position ourKing = this->findKing(this->playerTurn());
      
      //cout<<"ourking is at " <<ourKing.x<<","<<ourKing.y<<endl;//
@@ -423,9 +420,11 @@ int ChessGame::makeMove(Position start, Position end){
      }
      else { //it wasn't in check before the move so keep going
        //actually move the pieces
-       int control = 1;
+       control = 1;
+
        if ((m_pieces.at(index(start))->id())== PAWN_ENUM) {
-	 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == height() -1)) {
+	 
+	 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == this->height() -1)) {
 	   whitepawn.x = end.x;
 	   whitepawn.y = height() - 1;
 	   m_pieces.at(index(end)) = NULL;
@@ -443,10 +442,12 @@ int ChessGame::makeMove(Position start, Position end){
 	 }
       }
        if (control) {
-       m_pieces.at(index(end)) = m_pieces.at(index(start));
+
+	 m_pieces.at(index(end)) = m_pieces.at(index(start));
        m_pieces.at(index(start)) = NULL;
        }
      }
+     
      ourKing= this->findKing(this->playerTurn());
 
       //determines if under check for the first time
@@ -481,7 +482,7 @@ int ChessGame::makeMove(Position start, Position end){
 	 return MOVE_STALEMATE;
        }
    
-
+     //   cout << "hi" << endl;
       return retCode;
   } //else was invalid already
   return retCode;
@@ -786,8 +787,8 @@ void ChessGame::run() {
 
 	//update the piece that was moved "hasMoved" variable
 	if (moveCode > 0) {
-	  this->getPiece(start)->hasMoved = 1;
-	}
+	  this->getPiece(end)->setHasMoved(1);
+	} 
 	
 	//cout << startx << " " << starty <<endl;// error checking
         //cout << endx << " " << endy <<endl;//

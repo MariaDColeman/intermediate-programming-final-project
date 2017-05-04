@@ -199,11 +199,12 @@ public:
     virtual char getDirection(Position, Position) const {return '0';}
     virtual int getSpaces(Position, Position) const {return 0;}
     virtual int noPeopleInWay(Position, Position, const Board&) const {return 0;}
-    int hasMoved = 0;
+    int getHasMoved() {return hasMoved;}
+    void setHasMoved(int i) {hasMoved = i;}
 protected:
     Player m_owner;
     int m_id;
-
+    int hasMoved = 0;
     // Constructs a piece with a specified owner
     // Note that this is deliberately made protected. Use the factory only!
     // [DO NOT MODIFY]
