@@ -258,7 +258,7 @@ int ChessGame::makeMove(Position start, Position end){
   
   //negative if out of bounds
   int retCode = Board::makeMove(start, end);
-  int validMoveCode; //code from check if it's a valid move
+  //int validMoveCode; //code from check if it's a valid move
   Position whitepawn;
   Position blackpawn;
   if (retCode==1) {
@@ -275,7 +275,7 @@ int ChessGame::makeMove(Position start, Position end){
      
      //cout<<"ourking is at " <<ourKing.x<<","<<ourKing.y<<endl;//
      //cout << "is checked position of ourKing " << this->isCheckedPosition(ourKing) << endl;
-     int underCheck = this->isCheckedPosition(ourKing) == MOVE_CHECK;//
+     //int underCheck = this->isCheckedPosition(ourKing) == MOVE_CHECK;//
      
      //cout <<" is our king already under check?" << underCheck<<endl;//
      
@@ -297,9 +297,9 @@ int ChessGame::makeMove(Position start, Position end){
        //actually move the pieces
        int control = 1;
        if ((m_pieces.at(index(start))->id())== PAWN_ENUM) {
-	 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == 7)) {
+	 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == height() -1)) {
 	   whitepawn.x = end.x;
-	   whitepawn.y = 7;
+	   whitepawn.y = height() - 1;
 	   m_pieces.at(index(end)) = NULL;
 	   initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
 	   m_pieces.at(index(start)) = NULL;
