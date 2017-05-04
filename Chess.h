@@ -52,11 +52,11 @@ enum PieceEnum {
 class ChessPiece : public Piece {
  protected:
  ChessPiece(Player owner, int id) : Piece(owner, id) {}
-
+  // int hasMoved = 0;
  public:
 
  int properAloneMove(Position start, Position end) const;
- int noPeopleInWay(Position start, Position end, const Board& board) const;
+ int noPeopleInWay(Position start, Position end, const Board& board) const override;
  
  //returns success if valid, else move error codes
  virtual int validMove(Position start, Position end, const Board& board) const override {
@@ -77,8 +77,10 @@ class ChessPiece : public Piece {
     }
  }
 
-  char getDirection(Position start, Position end) const;
-  int getSpaces(Position start, Position end) const;
+  char getDirection(Position start, Position end) const override;
+  int getSpaces(Position start, Position end) const override;
+
+  int hasMoved = 0;
   
   virtual int properDirection(char) const {return 0;}
   virtual int properSpaces(Position, Position) const {return 0;}
@@ -260,6 +262,7 @@ public:
 
     int getSetUp();
     Position findKing(Player pl);
+    Position findRook(Player pl, int skipFirstRookCode);
     int isCheckedPosition(Position king);
     int isUnderCheckMate(Player pl); 
     //int inStalemate(Player pl);
@@ -268,6 +271,7 @@ public:
     // Whether the chess game is over
     virtual bool gameOver() const override;
 
+    int isCastling(Position start, Position end);
     // Perform a move from the start Position to the end Position
     // The method returns an integer with the status
     // >= 0 is SUCCESS, < 0 is failure

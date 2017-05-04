@@ -196,6 +196,10 @@ public:
         return 0;
     }
 
+    virtual char getDirection(Position, Position) const {return '0';}
+    virtual int getSpaces(Position, Position) const {return 0;}
+    virtual int noPeopleInWay(Position, Position, const Board&) const {return 0;}
+    int hasMoved = 0;
 protected:
     Player m_owner;
     int m_id;

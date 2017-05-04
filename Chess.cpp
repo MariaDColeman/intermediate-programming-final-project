@@ -251,6 +251,125 @@ bool ChessGame::gameOver() const{
 
 
 
+//pl the player whose rook we want to find
+//returns the found rook's position, (-1,-1) if not found
+Position ChessGame::findRook(Player pl, int skipFirstRookCode) {
+    Position rook;
+      for (int i = 0; i < (int)this->width() * (int)this->height(); i++) {
+        rook.x = i % this->width();
+        rook.y = i / this->height();
+        if (this->getPiece(rook) != NULL) {
+          if ((this->getPiece(rook)->id() == ROOK_ENUM)&&(this->getPiece(rook)-\
+>owner() == pl)) {
+	    if (!skipFirstRookCode) {
+            return rook;
+	    }
+	    skipFirstRookCode = 0;
+          }
+        }
+      }
+      return Position(-1,-1);
+}
+
+
+
+
+
+int ChessGame::isCastling(Position start, Position end) {
+
+  //Castling is indicated by the user moving the king 2 spaces toward a rook in the appropriate circumstances.
+  //maybe also check if the king and rook havent moved yet during the game.
+  //use get direction and getspaces!
+
+  if (this->getPiece(start) == NULL) {
+    return 0; //not trying to castle
+  }
+
+  //check if piece in start position is a king
+  if (this->getPiece(start)->id() != KING_ENUM) {
+    return 0; //not trying to castle
+  }
+
+  
+  
+
+
+  Player kingOwner = this->getPiece(start)->owner();
+
+  Position rook = findRook(kingOwner, 0);
+
+  char dirKingWantsToMove = this->getPiece(start)->getDirection(start, end);
+  char dirFromKingToRook = this->getPiece(start)->getDirection(start, rook);
+  int spacesKingWantsToMove = this->getPiece(start)->getSpaces(start, end);
+  int spacesFromKingToRook = this->getPiece(start)->getSpaces(start, rook);
+  
+  if ((dirKingWantsToMove != dirFromKingToRook) || (spacesKingWantsToMove * spacesFromKingToRook < 0)) {
+    rook = findRook(kingOwner, 1);
+    dirFromKingToRook = this->getPiece(start)->getDirection(start, rook);
+    spacesFromKingToRook = this->getPiece(start)->getSpaces(start, rook);
+    if ((dirKingWantsToMove != dirFromKingToRook)  || (spacesKingWantsToMove * spacesFromKingToRook < 0)) {
+      return 0; //not trying to castle
+    }
+  }
+  //now we know direction king wants to move is in the rooks direction and that is it moving towards it
+  //now check if it is 2 spaces in that direction towardssss it
+  if ((spacesFromKingToRook != 2) || (spacesFromKingToRook) != -2) {
+    return 0; //not trying to castle
+  }
+
+  //check if the king and rook havent moved yet during the game
+  if ((this->getPiece(start)->hasMoved != 0) || (this->getPiece(rook)->hasMoved != 0)) {
+    return MOVE_ERROR_CANT_CASTLE; //MAYBE
+  }
+
+  //check if anything is in between them
+  int nothingInBetween = this->getPiece(start)->noPeopleInWay(start, rook, *this);
+  if (nothingInBetween == MOVE_ERROR_BLOCKED) {
+    return MOVE_ERROR_CANT_CASTLE; //MAYBE COME BACK AND CHANGE THIS
+  }
+  
+  //check if the king is in check
+  if (this->isCheckedPosition(start) == MOVE_CHECK) {
+    return MOVE_ERROR_CANT_CASTLE;
+  }
+
+  //Check what "The king moves through a square that is attacked by a piece of the opponent" means from link
+
+
+  //Check if the king would be in check after castling
+  Piece* rookInitial = this->getPiece(rook);
+  Piece* kingInitial = this->getPiece(start);
+  Position kingFinal;
+  Position rookFinal;
+  int sign = -1;
+  if (spacesFromKingToRook < 0) {
+    sign = 1;
+  }
+ 
+  kingFinal.y = start.y;
+  rookFinal.y = rook.y;
+  kingFinal.x = end.x;
+  rookFinal.x = kingFinal.x + sign;  
+
+  m_pieces.at(index(kingFinal)) = this->getPiece(start);
+  m_pieces.at(index(start)) = NULL;
+  m_pieces.at(index(rookFinal)) = this->getPiece(rook);
+  m_pieces.at(index(rook)) = NULL;
+
+  if (this->isCheckedPosition(kingFinal) == MOVE_CHECK) {
+    m_pieces.at(index(start)) = kingInitial;
+    m_pieces.at(index(rook)) = rookInitial;
+    return MOVE_ERROR_CANT_CASTLE;
+  }
+
+  
+  //if its not trying to castle, return a 0; let it keep going in makemove
+  //if it is trying to castle but cannot, return MOVE_ERROR_CANT_CASTLE. this is "because there are no pieces between the rook and king"
+  
+  //If it successfully can castle, return SUCCESS
+  return SUCCESS;
+}
+
 
 // Make a move on the board. Return an int, with < 0 being failure
 int ChessGame::makeMove(Position start, Position end){
@@ -259,6 +378,15 @@ int ChessGame::makeMove(Position start, Position end){
   //negative if out of bounds
   int retCode = Board::makeMove(start, end);
   //int validMoveCode; //code from check if it's a valid move
+
+
+  
+  //check isCastling(start,end); maybe call isCastling from valid move for king instead of here in make move
+
+
+
+
+  
   Position whitepawn;
   Position blackpawn;
   if (retCode==1) {
@@ -656,7 +784,12 @@ void ChessGame::run() {
 	}
         }
 
-        //cout << startx << " " << starty <<endl;// error checking
+	//update the piece that was moved "hasMoved" variable
+	if (moveCode > 0) {
+	  this->getPiece(start)->hasMoved = 1;
+	}
+	
+	//cout << startx << " " << starty <<endl;// error checking
         //cout << endx << " " << endy <<endl;//
         //      cout << makeMove(start,end) << endl;
         
