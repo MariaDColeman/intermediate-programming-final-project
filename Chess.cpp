@@ -650,8 +650,10 @@ void ChessGame::run() {
             nonMoveInput = 1;
 	}
 
+	if (!nonMoveInput) {
 	moveCode = makeMove(start,end);
 	printMoveMessages(moveCode);
+	}
         }
 
         //cout << startx << " " << starty <<endl;// error checking
@@ -663,7 +665,7 @@ void ChessGame::run() {
     //if not quitting or hasn't inputed movement places or move was invalid
 
      m_turn++;
-     cout << "move code is " << moveCode << endl;
+     //cout << "move code is " << moveCode << endl;
   }
 
  if (counter != 0) {
