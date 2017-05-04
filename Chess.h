@@ -57,7 +57,8 @@ class ChessPiece : public Piece {
 
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const override;
- 
+ virtual int validMove(Position start, Position end, const Board& board) const override;
+ /*
  //returns success if valid, else move error codes
  virtual int validMove(Position start, Position end, const Board& board) const override {
    //conditions if capturing
@@ -76,7 +77,7 @@ class ChessPiece : public Piece {
       return MOVE_ERROR_ILLEGAL;
     }
  }
-
+ */
   char getDirection(Position start, Position end) const override;
   int getSpaces(Position start, Position end) const override;
 
