@@ -6,6 +6,15 @@ TEAM:
 Maria Coleman mcolem31
 Farrah Lin flin27
 
+Sara's T/Th section
+
+*********************************************************************
+SPECIAL INSTRUCTIONS:
+If using Putty, please change your text font to be 24 or larger so the chess board is easier to see.
+
+Part of the chess pieces may look a little cut off at the end becasue the unicode chess characters are a wide, depending on your font. This happens due to the pitch of the font, and thus, fonts with larger pitch will let you see more of the piece.  
+
+We've included a jpeg of what the board looks to us: visualBoard.JPG
 
 *********************************************************************
 DESIGN:
@@ -23,10 +32,22 @@ TESTS:
 
 
 
+UNITTTEST:
+unittest runs as ./unittest, but the file it compiles is called test_chess
+It tests all the valid and invalid movement patterns for each of the piece types, including blocked pieces, capturing, etc.
+
+newGameIsNotOver asserts that a newly started, standard game is not over.
+invalidNoPiece asserts that you can't move a piece that you don't have
+offBoard asserts that you can't ask the game to move pieces on positions not on the board
+BlockedPiece asserts that you can't move your piece to a position occupied by your piece
+validMovesCapturePawn asserts that pawns can move diagonally to capture something
+validMovesCaptureUsingAnythingElse asserts that you can capture using anything else (king used as ex)
+validMovesLonelyPawn asserts that pawns on their starting position can move 2 up, and anything else that is valid for normal pawns, but can't move in a way that's invalid
+validMovesLonely*** asserts similar statements for each type of piece.
 
 
-*********************************************************************
-SPECIAL INSTRUCTIONS:
-If using Putty, please change your text font to be 24 or larger so the chess board is easier to see.
 
-Part of the chess pieces may look a little cut off at the end becasue the unicode chess characters are a wide, depending on your font. This happens due to the pitch of the font, and thus, fonts with larger pitch will let you see more of the piece.  
+NOTE: a bunch of positions are declared as global because we wanted to keep reusing them in the valid moves tests. We had them redeclared in each validmove test function, but wanted to make it cleaner. We tried to declare them as instance variables inside the test_chess class, but it kept giving me errors so Adrianna told us just to put it outside the class entirely. 
+
+
+

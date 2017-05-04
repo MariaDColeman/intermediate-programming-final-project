@@ -5,12 +5,13 @@
 
 /*
 test_chess
+runs as ./unittest
 
 */
 
-class test_chess {
-  /*private:
-   Position dur(4,4); //diagonal up right
+//positions related to 3,3 for reuse in validmove checking
+//to avoid compilation errors, adrianna told me to leave them as global variables
+    Position dur(4,4); //diagonal up right
     Position dul(2,4); //diagonal up left
     Position ddr(4,2); //diagonal down right
     Position ddl(2,2); //diagonal down left
@@ -36,12 +37,13 @@ class test_chess {
     Position Lsdl(1,2); //knight side down left
     Position Ldr(4,1); //knight down right
     Position Ldl(2,1); //knight down left
-  */
-  
+
+
+class test_chess {
+      
 public:
   ChessGame c;
-  //Pawn *  p = new Pawn(Player(WHITE), 0);
-   
+  
    test_chess() {
     c.setupBoard();
     c.m_turn = 1;
@@ -58,11 +60,74 @@ public:
     cout<<"passed newGameIsNotOver"<<endl<<endl;
   }
 
-void validMovesLonelyWhiteRook() {
+  
+  void invalidNoPiece(){
+    clearBoard();
+    Position start(0,6);
+    Position end(0,5);
+    int i;
+    i = c.makeMove(start, end);
+    assert(i < 0);
+    cout<<"passed invalidNoPiece\n"<<endl;
+  }
+
+  void offBoard(){
+    Position istart(-1,-1);
+    Position iend(9,9);
+    Position valid(4,4);
+    
+    int i = c.makeMove(istart, valid);
+    assert(i < 0);
+
+    i = c.makeMove(valid, iend);
+    assert(i < 0);
+    cout<<"passed offBoard\n"<<endl;
+  }
+
+ void BlockedPiece() {
+    clearBoard();
+    Position start(3,1);
+    Position end(4,2);
+    int i;
+    c.initPiece(3, WHITE, start);
+    c.initPiece(3, WHITE, end);
+    //white bishop at d2, e3
+    i = c.getPiece(start)->validMove(start, end, c);
+    assert(i<0);
+    cout<<"passed BlockedPiece\n"<<endl;
+  }
+  
+ void validMovesCapturePawn() {
+    clearBoard();
+    Position start(3,1);
+    Position capture(4,2);
+    int i;
+    c.initPiece(0, WHITE, start);
+    c.initPiece(0, BLACK, capture);
+    //white pawn at d2, black pawn at e3
+    i = c.getPiece(start)->validMove(start, capture, c);
+    assert(i>0);
+    cout<<"passed validMovesCapturePawn\n"<<endl;
+  }
+
+  void validMovesCaptureUsingAnythingElse() {
+    clearBoard();
+    Position start(3,1);
+    Position capture(4,2);
+    int i;
+    c.initPiece(5, WHITE, start);
+    c.initPiece(0, BLACK, capture);
+    //white king at d2, black pawn at e3
+    i = c.getPiece(start)->validMove(start, capture, c);
+    assert(i>0);
+    cout<<"passed validMovesCaptureUsingAnythingElse\n"<<endl;
+  }
+  
+  void validMovesLonelyWhiteRook() {
     clearBoard();
     Position start(3,1);
     c.initPiece(1, WHITE, start);
-    //white Rook only at d4
+    //white Rook only at d2
     validMovesLonelyRook();
     cout<<"passed validMovesLonelyWhiteRook\n"<<endl;
   }
@@ -73,6 +138,7 @@ void validMovesLonelyWhiteKnight() {
     c.initPiece(2, WHITE, start);
     //white knight only at d4
     validMovesLonelyKnight();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyWhiteKnight\n"<<endl;
   }
   
@@ -82,6 +148,7 @@ void validMovesLonelyWhiteKnight() {
     c.initPiece(3, WHITE, start);
     //white bishop only at d4
     validMovesLonelyBishop();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyWhiteBishop\n"<<endl;
   }
   
@@ -91,6 +158,7 @@ void validMovesLonelyWhiteKnight() {
     c.initPiece(4, WHITE, start);
     //white queen only at d4
     validMovesLonelyQueen();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyWhiteQueen\n"<<endl;
   }
   
@@ -100,6 +168,7 @@ void validMovesLonelyWhiteKnight() {
     c.initPiece(5, WHITE, start);
     //white king only at d4
     validMovesLonelyKing();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyWhiteKing\n"<<endl;
   }
 
@@ -110,6 +179,7 @@ void validMovesLonelyWhiteKnight() {
     c.initPiece(1, BLACK, start);
     //black Rook only at d4
     validMovesLonelyRook();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyBlackRook\n"<<endl;
   }
   
@@ -119,6 +189,7 @@ void validMovesLonelyBlackKnight() {
     c.initPiece(2, BLACK, start);
     //black knight only at d4
     validMovesLonelyKnight();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyBlackKnight\n"<<endl;
   }
   
@@ -128,6 +199,7 @@ void validMovesLonelyBlackKnight() {
     c.initPiece(3, BLACK, start);
     //black bishop only at d4
     validMovesLonelyBishop();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyBlackBishop\n"<<endl;
   }
   
@@ -137,6 +209,7 @@ void validMovesLonelyBlackKnight() {
     c.initPiece(4, BLACK, start);
     //black queen only at d4
     validMovesLonelyQueen();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyBlackQueen\n"<<endl;
   }
   
@@ -146,14 +219,15 @@ void validMovesLonelyBlackKnight() {
     c.initPiece(5, BLACK, start);
     //Black king only at d4
     validMovesLonelyKing();
+    //tests valid and invalid movement patterns
     cout<<"passed validMovesLonelyBlackKing\n"<<endl;
   }
   
   void validMovesLonelyWhitePawn() {
     clearBoard();
-    c.setUpSavedBoard("wponly.txt");
-    //white pawn only at d2
     Position start(3,1);
+    c.initPiece(0, WHITE, start);
+    //white pawn only at d2
     Position dur(4,2); //diagonal up right
     Position dul(2,2); //diagonal up left
     Position ddr(4,0); //diagonal down right
@@ -288,33 +362,6 @@ void validMovesLonelyBlackKnight() {
 
 void validMovesLonelyKnight() {
     Position start(3,3);
-    Position dur(4,4); //diagonal up right
-    Position dul(2,4); //diagonal up left
-    Position ddr(4,2); //diagonal down right
-    Position ddl(2,2); //diagonal down left
-
-    Position dur3(6,6); //diagonal up right
-    Position dul3(0,6); //diagonal up left
-   
-    Position u(3,4); //up 1
-    Position u2(3,5); //up 2
-    Position d(3,2); //down 1
-    Position r(4,3); //right 1
-    Position l(2,3); //left 1
-
-    Position u3(3,6); //up 3
-    Position r3(6,3); //right 3
-    Position l3(0,3); //left 3
-
-    Position Lur(4,5); //knight up right
-    Position Lul(2,5); //knight up left
-    Position Lsur(5,4); //knight side up right
-    Position Lsdr(5,2); //knight side down right
-    Position Lsul(1,4); //knight side up left
-    Position Lsdl(1,2); //knight side down left
-    Position Ldr(4,1); //knight down right
-    Position Ldl(2,1); //knight down left
-   
     int i;
 
     //valid knight shaped moves
@@ -359,7 +406,6 @@ void validMovesLonelyKnight() {
     //invalid diagonal up left
     i = c.getPiece(start)->validMove(start, dul3, c);
     assert(i < 0);
-
     
     //invalid down
     i = c.getPiece(start)->validMove(start, d, c);
@@ -396,34 +442,7 @@ void validMovesLonelyKnight() {
 
 
 void validMovesLonelyBishop() {
-    Position start(3,3);
-    Position dur(4,4); //diagonal up right
-    Position dul(2,4); //diagonal up left
-    Position ddr(4,2); //diagonal down right
-    Position ddl(2,2); //diagonal down left
-
-    Position dur3(6,6); //diagonal up right
-    Position dul3(0,6); //diagonal up left
-   
-    Position u(3,4); //up 1
-    Position u2(3,5); //up 2
-    Position d(3,2); //down 1
-    Position r(4,3); //right 1
-    Position l(2,3); //left 1
-
-    Position u3(3,6); //up 3
-    Position r3(6,3); //right 3
-    Position l3(0,3); //left 3
-
-    Position Lur(4,5); //knight up right
-    Position Lul(2,5); //knight up left
-    Position Lsur(5,4); //knight side up right
-    Position Lsdr(5,2); //knight side down right
-    Position Lsul(1,4); //knight side up left
-    Position Lsdl(1,2); //knight side down left
-    Position Ldr(4,1); //knight down right
-    Position Ldl(2,1); //knight down left
-   
+    Position start(3,3);   
     int i;
 
     //invalid knight shaped moves
@@ -468,7 +487,6 @@ void validMovesLonelyBishop() {
     //valid diagonal up left
     i = c.getPiece(start)->validMove(start, dul3, c);
     assert(i > 0);
-
     
     //invalid down
     i = c.getPiece(start)->validMove(start, d, c);
@@ -505,33 +523,6 @@ void validMovesLonelyBishop() {
 
   void validMovesLonelyQueen() {
     Position start(3,3);
-    Position dur(4,4); //diagonal up right
-    Position dul(2,4); //diagonal up left
-    Position ddr(4,2); //diagonal down right
-    Position ddl(2,2); //diagonal down left
-
-    Position dur3(6,6); //diagonal up right
-    Position dul3(0,6); //diagonal up left
-   
-    Position u(3,4); //up 1
-    Position u2(3,5); //up 2
-    Position d(3,2); //down 1
-    Position r(4,3); //right 1
-    Position l(2,3); //left 1
-
-    Position u3(3,6); //up 3
-    Position r3(6,3); //right 3
-    Position l3(0,3); //left 3
-
-    Position Lur(4,5); //knight up right
-    Position Lul(2,5); //knight up left
-    Position Lsur(5,4); //knight side up right
-    Position Lsdr(5,2); //knight side down right
-    Position Lsul(1,4); //knight side up left
-    Position Lsdl(1,2); //knight side down left
-    Position Ldr(4,1); //knight down right
-    Position Ldl(2,1); //knight down left
-   
     int i;
 
     //invalid knight shaped moves
@@ -614,33 +605,6 @@ void validMovesLonelyBishop() {
 
   void validMovesLonelyKing() {
     Position start(3,3);
-    Position dur(4,4); //diagonal up right
-    Position dul(2,4); //diagonal up left
-    Position ddr(4,2); //diagonal down right
-    Position ddl(2,2); //diagonal down left
-
-    Position dur3(6,6); //diagonal up right
-    Position dul3(0,6); //diagonal up left
-   
-    Position u(3,4); //up 1
-    Position u2(3,5); //up 2
-    Position d(3,2); //down 1
-    Position r(4,3); //right 1
-    Position l(2,3); //left 1
-
-    Position u3(3,6); //up 3
-    Position r3(6,3); //right 3
-    Position l3(0,3); //left 3
-
-    Position Lur(4,5); //knight up right
-    Position Lul(2,5); //knight up left
-    Position Lsur(5,4); //knight side up right
-    Position Lsdr(5,2); //knight side down right
-    Position Lsul(1,4); //knight side up left
-    Position Lsdl(1,2); //knight side down left
-    Position Ldr(4,1); //knight down right
-    Position Ldl(2,1); //knight down left
-   
     int i;
 
     //invalid knight shaped moves
@@ -720,29 +684,6 @@ void validMovesLonelyBishop() {
     assert(i < 0);
 }
   
-  void invalidNoPiece(){
-    clearBoard();
-    Position start(0,6);
-    Position end(0,5);
-    int i;
-    i = c.makeMove(start, end);
-    assert(i < 0);
-    cout<<"passed invalidNoPiece\n"<<endl;
-  }
-
-  void offBoard(){
-    Position istart(-1,-1);
-    Position iend(9,9);
-    Position valid(4,4);
-    
-    int i = c.makeMove(istart, valid);
-    assert(i < 0);
-
-    i = c.makeMove(valid, iend);
-    assert(i < 0);
-    cout<<"passed offBoard\n"<<endl;
-  }
-
 
   
 };
@@ -753,6 +694,12 @@ int main() {
   t.newGameIsNotOver();
   t.invalidNoPiece();
   t.offBoard();
+  t.BlockedPiece();
+
+  
+  t.validMovesCapturePawn();
+  t.validMovesCaptureUsingAnythingElse();
+
   t.validMovesLonelyWhitePawn();
   t.validMovesLonelyWhiteRook();
   t.validMovesLonelyWhiteKnight();
@@ -764,7 +711,6 @@ int main() {
   t.validMovesLonelyBlackBishop();
   t.validMovesLonelyBlackQueen();
   t.validMovesLonelyBlackKing();
-
-  cout<<"about to return"<<endl;
+  
   return 0;
 }
