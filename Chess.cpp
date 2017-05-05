@@ -710,6 +710,14 @@ void ChessGame::run() {
             nonMoveInput = 0; //a controlling factor for getting player input to make a move
 	    
             //cout << endl;//spacing for now, remove later?
+
+
+            //prints board
+            if (wantsBoard) {
+                printBoard(); //will need to toggle default
+            }
+
+
 	    
             //prints current player prompt
             if ((m_turn%2)==1) {
@@ -718,12 +726,7 @@ void ChessGame::run() {
             else {
          	Prompts::playerPrompt(BLACK, ((m_turn)/2));
             }
-
-            //prints board
-            if (wantsBoard) {
-                printBoard(); //will need to toggle default
-            }
-
+	    
             //gets user input for movement or other, converts to lower
             std::getline(cin, line);
 
@@ -739,9 +742,6 @@ void ChessGame::run() {
             if (!line.compare("board")) { //toggles board
                 wantsBoard = !wantsBoard;
                 nonMoveInput = 1;
-                if (wantsBoard) {
-                    printBoard();
-                }
             }
             if (!line.compare("save")) {
                 Prompts::saveGame();
@@ -755,8 +755,7 @@ void ChessGame::run() {
 	      //cout << "check turn # later" <<endl; //
 		m_turn++;
 		printMoveMessages(GAME_WIN);
-		//Prompts::win(Player(m_turn%2), (m_turn+1)/2);
-                line = "q";
+		line = "q";
                 nonMoveInput = 1;
                 break;
             }
@@ -789,7 +788,7 @@ void ChessGame::run() {
                 if (!nonMoveInput) {
                     moveCode = makeMove(start,end);
 		    //m_turn--;
-                    printMoveMessages(moveCode);
+                    //printMoveMessages(moveCode);
                 }
             }
 
@@ -855,7 +854,8 @@ void ChessGame::printMoveMessages(int code) {
         Prompts::staleMate();
         return;
     case GAME_WIN:
-      Prompts::win(this->playerTurn(),(this->turn()+1)/2);
+       Prompts::win(this->playerTurn(),(this->turn()+1)/2);
+      //Prompts::win(this->playerTurn(), this->m_turn);
         return;
     case GAME_OVER:
         Prompts::gameOver();

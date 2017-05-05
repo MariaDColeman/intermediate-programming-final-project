@@ -84,3 +84,7 @@ EXTRA CREDIT: CASTLING
 I asked multiple ta's without a clear response on what classifies the player trying to make a castling move. I assume it needs to be 2 spaces towards a rook with no pieces in between and that neither has moved before. 
 
 
+
+
+For the printing out who wins!
+we assume "turns" in Prompts.h is equal to the total turns and the next one so if it is white turn 2, and white types forfeit, it outputs that black wins on turn 3;

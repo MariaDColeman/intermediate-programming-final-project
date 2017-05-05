@@ -52,41 +52,16 @@ enum PieceEnum {
 class ChessPiece : public Piece {
  protected:
  ChessPiece(Player owner, int id) : Piece(owner, id) {}
-  // int hasMoved = 0;
+ 
  public:
-
  int properAloneMove(Position start, Position end) const;
  int noPeopleInWay(Position start, Position end, const Board& board) const override;
  virtual int validMove(Position start, Position end, const Board& board) const override;
- /*
- //returns success if valid, else move error codes
- virtual int validMove(Position start, Position end, const Board& board) const override {
-   //conditions if capturing
-   if (board.getPiece(end) != NULL) {
-	if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-	  return MOVE_ERROR_BLOCKED;
-        }
-   } //end of conditions if capturing
-
-   //checking if it's a valid move based on specific piece type movement patterns
-    if (properAloneMove(start,end) >= 0) {
-      int code = noPeopleInWay(start, end, board);
-      return code;
-    }
-    else {
-      return MOVE_ERROR_ILLEGAL;
-    }
- }
- */
   char getDirection(Position start, Position end) const override;
   int getSpaces(Position start, Position end) const override;
-
   int hasMoved = 0;
-  
   virtual int properDirection(char) const {return 0;}
-  virtual int properSpaces(Position, Position) const {return 0;}
-
-  
+  virtual int properSpaces(Position, Position) const {return 0;} 
 };
 
 class Pawn : public ChessPiece {
@@ -219,8 +194,7 @@ public:
     int validMove(Position start, Position end,
         const Board& board) const override {return ChessPiece::validMove(start, end, board); }
     virtual int properDirection(char dir) const override {
-      //       cout << "                                     ITS THE QUEEN" << dir << endl;
-      return (dir != 'L' && dir != '0');
+        return (dir != 'L' && dir != '0');
     }
     virtual int properSpaces(Position, Position) const override{
       return 1;
@@ -241,8 +215,7 @@ public:
       return ((dir != 'L')&&(dir != '0'));
     }
     virtual int properSpaces(Position start, Position end) const override{
-      //cout << "king proper spaces" << getSpaces(start, end) << endl;
-      return (abs(getSpaces(start, end)) == 1);
+       return (abs(getSpaces(start, end)) == 1);
     }
 };
 
