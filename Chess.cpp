@@ -325,40 +325,60 @@ int ChessGame::isCastling(Position start, Position end) {
         return MOVE_ERROR_CANT_CASTLE;
     }
 
-
-    //Check what "The king moves through a square that is attacked by a piece of the opponent" means from link
-
-
-    //Check if the king would be in check after castling
+    //Check if the king would be in check through intermediate steps or after castling
     Piece* rookInitial = this->getPiece(rook);
     Piece* kingInitial = this->getPiece(start);
     Position kingFinal;
     Position rookFinal;
+
+    //x directional adjust
     int sign = -1;
     if (spacesFromKingToRook < 0) {
         sign = 1;
     }
-
+    Position intermediate(start.x - sign, start.y); //start intermediate squares
+    
     kingFinal.y = start.y;
     rookFinal.y = rook.y;
     kingFinal.x = end.x;
     rookFinal.x = kingFinal.x + sign;
+    
+    //remove the king for now
+    m_pieces.at(index(start))= NULL;
 
-    m_pieces.at(index(kingFinal)) = this->getPiece(start);
+    //return error if king will be in check through the intermediate steps
+    do {
+      //move the king to the intermediate and check for check
+      m_pieces.at(index(intermediate)) = kingInitial;
+      if (isCheckedPosition(intermediate) == MOVE_CHECK) {
+	//if it is in check, undo
+	m_pieces.at(index(intermediate)) = NULL;
+	m_pieces.at(index(start)) = kingInitial;
+	return MOVE_ERROR_CANT_CASTLE;
+      }
+      //remove king at intermediate and increment intermediate
+      m_pieces.at(index(intermediate)) = NULL;
+      intermediate.x = intermediate.x - sign;
+    } while (intermediate.x != kingFinal.x);
+    
+    //actually do the castling
+    m_pieces.at(index(kingFinal)) = kingInitial;
     m_pieces.at(index(start)) = NULL;
-    m_pieces.at(index(rookFinal)) = this->getPiece(rook);
+    m_pieces.at(index(rookFinal)) =rookInitial;
     m_pieces.at(index(rook)) = NULL;
 
+    //check if the king will be checked in the final position
     if (this->isCheckedPosition(kingFinal) == MOVE_CHECK) {
+        //undo if it will be in check
         m_pieces.at(index(start)) = kingInitial;
         m_pieces.at(index(rook)) = rookInitial;
+	m_pieces.at(index(kingFinal)) = NULL;
+	m_pieces.at(index(rookFinal))= NULL;
         return MOVE_ERROR_CANT_CASTLE;
     }
-
-
+    
     //if its not trying to castle, return a 0; let it keep going in makemove
     //if it is trying to castle but cannot, return MOVE_ERROR_CANT_CASTLE.
-
     //If it successfully can castle, return SUCCESS
     return SUCCESS;
 }
@@ -381,8 +401,8 @@ int ChessGame::makeMove(Position start, Position end) {
         else {
             return castlingCode;
         }
-
     }
+    
     int checkedCode = 0;
     Piece* captured = NULL;
     int control;
@@ -410,6 +430,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
             control = 1;
 
+	    //pawn upgrade to queen cases
             if ((m_pieces.at(index(start))->id())== PAWN_ENUM) {
 
                 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == this->height() -1)) {
@@ -467,6 +488,7 @@ int ChessGame::makeMove(Position start, Position end) {
                 return MOVE_CHECKMATE;
             }
 
+	    retCode=MOVE_CHECK;
 	}
 
 	
@@ -567,11 +589,10 @@ void Board::printBoard() {
     string kt = "\u265E";
     string p = "\u265F";
 
-    //prints one in circle for unknown pieces
+    //prints question mark or box for unknown pieces
     string u = "\u2776";
-
-    //cout << "This is a single character: " << kg << endl;
-
+    string u1 = "\uFFFD";
+    
     string sym;
 
     for (int i = m_height - 1; i >= 0; i--) {
@@ -609,7 +630,7 @@ void Board::printBoard() {
                     sym = p;
                     break;
                 default:
-                    sym = u;
+                    sym = u1;
                     break;
                 }
 
@@ -623,7 +644,7 @@ void Board::printBoard() {
                 cout  << sym << " ";
             }
             else {
-                cout << "  ";
+	      cout << "  ";
             }
         }
         //reset colors
@@ -667,7 +688,7 @@ void ChessGame::run() {
     string line = "";
     string filename;
     int nonMoveInput = 0; //a controlling factor for getting player input
-    int wantsBoard = 1; //default should be 0, change before submitting
+    int wantsBoard = 0; //default should be 0, change before submitting
     int moveCode = 0;
     int counter = 0;
 
