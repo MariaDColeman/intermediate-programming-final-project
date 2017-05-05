@@ -1,0 +1,16 @@
+1. Start a new game
+2. Load a saved game
+Enter a file to load from:
+Black turn 2:
+Black checks!
+White turn 3:
+Enter a file to save to:
+White turn 3:
+Black turn 3:
+Error: blocked by another piece.
+Black turn 3:
+Error: you do not have a piece there.
+Black turn 3:
+Error: out of bounds.
+Black turn 3:
+Game over. Goodbye!

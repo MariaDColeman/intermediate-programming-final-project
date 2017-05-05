@@ -1,0 +1,10 @@
+2
+save18.txt
+h2 h1
+save
+pawn_upgrade_test_18.txt
+a1 b2
+h1 h8
+a2 a3
+z1 z2
+q
