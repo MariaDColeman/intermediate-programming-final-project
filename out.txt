@@ -1,0 +1,12 @@
+1. Start a new game
+2. Load a saved game
+White turn 1:
+Black turn 1:
+White turn 2:
+White captures a piece.
+Black turn 2:
+White turn 3:
+Black turn 3:
+Black captures a piece.
+White turn 4:
+Game over. Goodbye!

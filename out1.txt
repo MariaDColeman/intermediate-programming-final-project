@@ -1,0 +1,9 @@
+1. Start a new game
+2. Load a saved game
+White turn 1:
+Black turn 1:
+White turn 2:
+Black turn 2:
+Black checkmates!!!
+Black wins on turn 2
+Game over. Goodbye!

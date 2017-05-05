@@ -1,0 +1,10 @@
+1. Start a new game
+2. Load a saved game
+Enter a file to load from:
+White turn 2:
+White checks!
+Black turn 2:
+Error: couldn't parse your move.
+Black turn 2:
+White wins on turn 3
+Game over. Goodbye!

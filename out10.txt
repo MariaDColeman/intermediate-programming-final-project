@@ -1,0 +1,9 @@
+1. Start a new game
+2. Load a saved game
+Enter a file to load from:
+White turn 2:
+White checks!
+Black turn 2:
+Error: your king is checked.
+Black turn 2:
+Game over. Goodbye!

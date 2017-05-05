@@ -1,0 +1,16 @@
+1. Start a new game
+2. Load a saved game
+White turn 1:
+Black turn 1:
+White turn 2:
+Black turn 2:
+White turn 3:
+Black turn 3:
+White turn 4:
+Black turn 4:
+White turn 5:
+Black turn 5:
+White turn 6:
+Black turn 6:
+White turn 7:
+Game over. Goodbye!

@@ -95,7 +95,7 @@ public:
     }
 
     static void gameOver() {
-        std::cout << "Game over. Goodbye!";
+        std::cout << "Game over. Goodbye!\n";
     }
 
 };

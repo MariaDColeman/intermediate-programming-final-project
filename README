@@ -42,19 +42,22 @@ No major errors as far as we know.
 TESTS:
 
 END TO END:
-1: in1 black checkmates white in 3 steps. aka foolsmate from wikipedia
+1: case insensitive, black checkmates white aka foolsmate from wikipedia
 2: white checkmates black
-3: white checks black
+3: white checks black, checks output for forfeit, cannot parse your move 
 4: goes into a stalemate
 5: white checkmates black, also tests that pawns get upgraded to queens
 6: valid castling, white does short castling and black does long castling.
-7: invalid castling, trying to castle after the white king has moved
-8: invalid castling, trying to castle after the white rook has moved
-9: invalid castling, trying to castle when pieces are in the way
+7: invalid castling/illegal move, trying to castle after the white king has moved
+8: invalid castling/illegal move, trying to castle after the white rook has moved
+9: invalid castling/illegal move, trying to castle when pieces are in the way
 10: must handle check, trying to move when the king is already in check
 11: can't expose king to a check
-
-
+12: invalid castling, trying to castle while king is in check
+13: invalid castling, trying to castle when king would be in check after landing
+14: invalid castling, king moves through a square attacked by an opponent
+15: black checks white
+16: captures pieces output
 
 UNIT TEST:
 unittest runs as ./unittest, but the file it compiles is called test_chess
@@ -67,7 +70,7 @@ BlockedPiece asserts that you can't move your piece to a position occupied by yo
 validMovesCapturePawn asserts that pawns can move diagonally to capture something
 validMovesCaptureUsingAnythingElse asserts that you can capture using anything else (king used as ex)
 validMovesLonelyPawn asserts that pawns on their starting position can move 2 up, and anything else that is valid for normal pawns, but can't move in a way that's invalid
-validMovesLonely*** asserts similar statements to the pawn for each type of piece.
+validMovesLonely*** asserts that each type of piece cannot move in a way that's invalid, and can move ina way that's valid.
 
 
 

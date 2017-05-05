@@ -1,0 +1,10 @@
+1. Start a new game
+2. Load a saved game
+White turn 1:
+Black turn 1:
+White turn 2:
+Black turn 2:
+White turn 3:
+Error: illegal move.
+White turn 3:
+Game over. Goodbye!
