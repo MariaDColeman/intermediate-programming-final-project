@@ -23,74 +23,74 @@ using std::string;
 //return success if valid, else move error codes
 int ChessPiece::validMove(Position start, Position end, const Board& board) const {
 
-  //consitions if capturing
-  if (board.getPiece(end) != NULL) {
-    if (board.getPiece(end)->owner() == board.getPiece(start)->owner()) {
-      return MOVE_ERROR_BLOCKED;
-    }
-  } // end of conditions if capturing
+    //consitions if capturing
+    if (board.getPiece(end) != NULL) {
+        if (board.getPiece(end)->owner() == board.getPiece(start)->owner()) {
+            return MOVE_ERROR_BLOCKED;
+        }
+    } // end of conditions if capturing
 
-  //checking if it's a valid move based on specific piece type movement patterns
-  if (properAloneMove(start,end) >= 0) {
-    int code = noPeopleInWay(start, end, board);
-    return code;
-  }
-  else {
-    return MOVE_ERROR_ILLEGAL;
-  }
+    //checking if it's a valid move based on specific piece type movement patterns
+    if (properAloneMove(start,end) >= 0) {
+        int code = noPeopleInWay(start, end, board);
+        return code;
+    }
+    else {
+        return MOVE_ERROR_ILLEGAL;
+    }
 }
 
-int Pawn:: properSpaces(Position start, Position end) const{
-      //first move
-      if ((m_owner == BLACK) && (start.y == 6)) {
+int Pawn:: properSpaces(Position start, Position end) const {
+    //first move
+    if ((m_owner == BLACK) && (start.y == 6)) {
         return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
-      }
-      else if ((m_owner == WHITE) && (start.y == 1)) {
-        return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
-      }
-
-      //normal moves
-      if (m_owner == BLACK) {
-        return (getSpaces(start, end) == -1);
-      } else {
-        return (getSpaces(start, end) == 1);
-      }
     }
+    else if ((m_owner == WHITE) && (start.y == 1)) {
+        return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
+    }
+
+    //normal moves
+    if (m_owner == BLACK) {
+        return (getSpaces(start, end) == -1);
+    } else {
+        return (getSpaces(start, end) == 1);
+    }
+}
 
 
 int Pawn:: validMove(Position start, Position end,
-        const Board& board) const {
+                     const Board& board) const {
 
-      char tempDir = getDirection(start,end);
-      char tempSpaces = getSpaces(start,end);
+    char tempDir = getDirection(start,end);
+    char tempSpaces = getSpaces(start,end);
 
-      //flip spaces if black
-      if (board.getPiece(start)->owner() != WHITE) {
+    //flip spaces if black
+    if (board.getPiece(start)->owner() != WHITE) {
         tempSpaces = -(int)tempSpaces;
-      }
+    }
 
-      //if blocked by own piece
-      if (board.getPiece(end) != NULL) {
+    //if blocked by own piece
+    if (board.getPiece(end) != NULL) {
         if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-        return MOVE_ERROR_BLOCKED;
+            return MOVE_ERROR_BLOCKED;
         }
-      }
+    }
 
-      //if trying to capture
-      if (board.getPiece(end) != NULL) {
+    //if trying to capture
+    if (board.getPiece(end) != NULL) {
         if ((tempDir == '/') && (tempSpaces == 1)) {
-          return SUCCESS;
+            return SUCCESS;
         }
         if ((tempDir == '\\') && (tempSpaces == -1)) {
-          return SUCCESS;
+            return SUCCESS;
         }
         else {
-          return MOVE_ERROR_ILLEGAL;
+            return MOVE_ERROR_ILLEGAL;
         }
-      }
+    }
 
-      //check normal moves
-      return ChessPiece::validMove(start, end, board);
+    //check normal moves
+    return ChessPiece::validMove(start, end, board);
 }
 
 
@@ -392,33 +392,33 @@ int ChessGame::isCastling(Position start, Position end) {
         sign = 1;
     }
     Position intermediate(start.x - sign, start.y); //start intermediate squares
-    
+
     kingFinal.y = start.y;
     rookFinal.y = rook.y;
     kingFinal.x = end.x;
     rookFinal.x = kingFinal.x + sign;
-    
+
     //remove the king for now
 
     m_pieces.at(index(start))= NULL;
 
     //return error if king will be in check through the intermediate steps
     do {
-      //move the king to the intermediate and check for check
-      m_pieces.at(index(intermediate)) = kingInitial;
-      if (isCheckedPosition(intermediate) == MOVE_CHECK) {
-	//if it is in check, undo
+        //move the king to the intermediate and check for check
+        m_pieces.at(index(intermediate)) = kingInitial;
+        if (isCheckedPosition(intermediate) == MOVE_CHECK) {
+            //if it is in check, undo
 
-	m_pieces.at(index(intermediate)) = NULL;
-	m_pieces.at(index(start)) = kingInitial;
-	return MOVE_ERROR_CANT_CASTLE;
-      }
-      //remove king at intermediate and increment intermediate
+            m_pieces.at(index(intermediate)) = NULL;
+            m_pieces.at(index(start)) = kingInitial;
+            return MOVE_ERROR_CANT_CASTLE;
+        }
+        //remove king at intermediate and increment intermediate
 
-      m_pieces.at(index(intermediate)) = NULL;
-      intermediate.x = intermediate.x - sign;
+        m_pieces.at(index(intermediate)) = NULL;
+        intermediate.x = intermediate.x - sign;
     } while (intermediate.x != kingFinal.x);
-    
+
     //actually do the castling
     m_pieces.at(index(kingFinal)) = kingInitial;
 
@@ -432,11 +432,11 @@ int ChessGame::isCastling(Position start, Position end) {
         //undo if it will be in check
         m_pieces.at(index(start)) = kingInitial;
         m_pieces.at(index(rook)) = rookInitial;
-	m_pieces.at(index(kingFinal)) = NULL;
-	m_pieces.at(index(rookFinal))= NULL;
+        m_pieces.at(index(kingFinal)) = NULL;
+        m_pieces.at(index(rookFinal))= NULL;
         return MOVE_ERROR_CANT_CASTLE;
     }
-    
+
     //if its not trying to castle, return a 0; let it keep going in makemove
     //if it is trying to castle but cannot, return MOVE_ERROR_CANT_CASTLE.
     //If it successfully can castle, return SUCCESS
@@ -462,7 +462,7 @@ int ChessGame::makeMove(Position start, Position end) {
             return castlingCode;
         }
     }
-    
+
     int checkedCode = 0;
     Piece* captured = NULL;
     int control;
@@ -491,26 +491,26 @@ int ChessGame::makeMove(Position start, Position end) {
 
             control = 1;
 
-	    //pawn upgrade to queen cases
+            //pawn upgrade to queen cases
             if ((m_pieces.at(index(start))->id())== PAWN_ENUM) {
 
                 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == this->height() -1)) {
                     whitepawn.x = end.x;
                     whitepawn.y = height() - 1;
-		    delete(m_pieces.at(index(end)));
-		    m_pieces.at(index(end)) = NULL;
-		    initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
-		    delete(m_pieces.at(index(start)));
-		    m_pieces.at(index(start)) = NULL;
-		    control = 0;
+                    delete(m_pieces.at(index(end)));
+                    m_pieces.at(index(end)) = NULL;
+                    initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
+                    delete(m_pieces.at(index(start)));
+                    m_pieces.at(index(start)) = NULL;
+                    control = 0;
                 }
                 else if (((m_pieces.at(index(start))->owner())== BLACK) && (end.y == 0)) {
                     blackpawn.x = end.x;
                     blackpawn.y = 0;
-		    delete(m_pieces.at(index(end)));
+                    delete(m_pieces.at(index(end)));
                     m_pieces.at(index(end)) = NULL;
                     initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), blackpawn);
-		    delete(m_pieces.at(index(start)));
+                    delete(m_pieces.at(index(start)));
                     m_pieces.at(index(start)) = NULL;
                     control = 0;
                 }
@@ -522,44 +522,44 @@ int ChessGame::makeMove(Position start, Position end) {
             }
         }
 
-	ourKing= this->findKing(this->playerTurn());
-	
+        ourKing= this->findKing(this->playerTurn());
+
 
         //determines if under check for the first time
         if (this->isCheckedPosition(ourKing) == MOVE_CHECK) {
-	
+
             checkedCode = MOVE_ERROR_CANT_EXPOSE_CHECK;
             m_pieces.at(index(start)) = m_pieces.at(index(end));
             m_pieces.at(index(end)) = captured;
 
-       
+
             return checkedCode;
         } //end cases under check
 
         //det captured
         if (captured != NULL) {
 
-	  delete(captured);
-	  retCode = MOVE_CAPTURE;
+            delete(captured);
+            retCode = MOVE_CAPTURE;
         }
 
 
 
-	
-	Position theirKing= this->findKing(Player(!(this->playerTurn())));
-      
-       
-	if (this->isCheckedPosition(theirKing) == MOVE_CHECK) {
-	
+
+        Position theirKing= this->findKing(Player(!(this->playerTurn())));
+
+
+        if (this->isCheckedPosition(theirKing) == MOVE_CHECK) {
+
             if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
                 over = 1;
                 return MOVE_CHECKMATE;
             }
 
-	    retCode=MOVE_CHECK;
-	}
+            retCode=MOVE_CHECK;
+        }
 
-	
+
         if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
             over = 1;
             return MOVE_STALEMATE;
@@ -660,7 +660,7 @@ void Board::printBoard() {
     //prints question mark or box for unknown pieces
     string u = "\u2776";
     string u1 = "\uFFFD";
-    
+
     string sym;
 
     for (int i = m_height - 1; i >= 0; i--) {
@@ -712,7 +712,7 @@ void Board::printBoard() {
                 cout  << sym << " ";
             }
             else {
-	      cout << "  ";
+                cout << "  ";
             }
         }
         //reset colors
@@ -776,7 +776,7 @@ void ChessGame::run() {
             char endy = 'a';
             moveCode = 0;
             nonMoveInput = 0; //a controlling factor for getting player input to make a move
-	    
+
             //cout << endl;//spacing for now, remove later?
 
 
@@ -786,15 +786,15 @@ void ChessGame::run() {
             }
 
 
-	    
+
             //prints current player prompt
             if ((m_turn%2)==1) {
                 Prompts::playerPrompt(WHITE, ((m_turn)/2)+1);
             }
             else {
-         	Prompts::playerPrompt(BLACK, ((m_turn)/2));
+                Prompts::playerPrompt(BLACK, ((m_turn)/2));
             }
-	    
+
             //gets user input for movement or other, converts to lower
             std::getline(cin, line);
 
@@ -821,9 +821,9 @@ void ChessGame::run() {
             }
             if (!line.compare("forfeit")) {
 
-		m_turn++;
-		printMoveMessages(GAME_WIN);
-		line = "q";
+                m_turn++;
+                printMoveMessages(GAME_WIN);
+                line = "q";
                 nonMoveInput = 1;
                 break;
             }
@@ -855,15 +855,15 @@ void ChessGame::run() {
 
                 if (!nonMoveInput) {
                     moveCode = makeMove(start,end);
-		    printMoveMessages(moveCode);
+                    printMoveMessages(moveCode);
                 }
             }
 
             //update the piece that was moved "hasMoved" variable
             if (moveCode > 0) {
-	      if ((this->getPiece(end)->id() == KING_ENUM)||(this->getPiece(end)->id() == ROOK_ENUM)) {
-	      this->getPiece(end)->setHasMoved(1);
-	      }
+                if ((this->getPiece(end)->id() == KING_ENUM)||(this->getPiece(end)->id() == ROOK_ENUM)) {
+                    this->getPiece(end)->setHasMoved(1);
+                }
             }
 
 
@@ -879,7 +879,7 @@ void ChessGame::run() {
     }
 
     if ((line.compare("q") != 0) && (moveCode != MOVE_STALEMATE)) {
-      printMoveMessages(GAME_WIN);
+        printMoveMessages(GAME_WIN);
     }
 
     Prompts::gameOver();

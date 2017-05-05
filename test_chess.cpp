@@ -51,8 +51,8 @@ public:
 
     void clearBoard() {
         for(int i = 0; i < (int)c.m_width* (int)c.m_height; i++) {
-	  delete(c.m_pieces.at(i));
-	  c.m_pieces.at(i) = NULL;
+            delete(c.m_pieces.at(i));
+            c.m_pieces.at(i) = NULL;
         }
     }
 
