@@ -369,7 +369,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
     //negative if out of bounds
     int retCode = Board::makeMove(start, end);
-
+    cout << retCode << endl;
     Position whitepawn;
     Position blackpawn;
     int castlingCode;
@@ -435,20 +435,17 @@ int ChessGame::makeMove(Position start, Position end) {
             }
         }
 
-        ourKing= this->findKing(this->playerTurn());
+	ourKing= this->findKing(this->playerTurn());
+	
 
         //determines if under check for the first time
         if (this->isCheckedPosition(ourKing) == MOVE_CHECK) {
+	//if (this->isCheckedPosition(theirKing) == MOVE_CHECK) {
             checkedCode = MOVE_ERROR_CANT_EXPOSE_CHECK;
             m_pieces.at(index(start)) = m_pieces.at(index(end));
             m_pieces.at(index(end)) = captured;
 
-            if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
-                cout << "checkmate" << endl;
-                over = 1;
-                return MOVE_CHECKMATE;
-            }
-
+       
             return checkedCode;
         } //end cases under check
 
@@ -457,8 +454,23 @@ int ChessGame::makeMove(Position start, Position end) {
             retCode = MOVE_CAPTURE;
         }
 
+
+
+	
+	Position theirKing= this->findKing(Player(!(this->playerTurn())));
+      
+       
+	if (this->isCheckedPosition(theirKing) == MOVE_CHECK) {
+	
+            if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
+                over = 1;
+                return MOVE_CHECKMATE;
+            }
+
+	}
+
+	
         if(isUnderCheckMate(Player(!(this->playerTurn()))) == MOVE_CHECKMATE) {
-            cout << "stalemate" << endl;
             over = 1;
             return MOVE_STALEMATE;
         }
