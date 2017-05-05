@@ -824,7 +824,9 @@ void ChessGame::run() {
 
             //update the piece that was moved "hasMoved" variable
             if (moveCode > 0) {
-                this->getPiece(end)->setHasMoved(1);
+	      if ((this->getPiece(end)->id() == KING_ENUM)||(this->getPiece(end)->id() == ROOK_ENUM)) {
+	      this->getPiece(end)->setHasMoved(1);
+	      }
             }
 
 
