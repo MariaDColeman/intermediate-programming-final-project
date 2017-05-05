@@ -12,9 +12,12 @@ Sara's T/Th section
 SPECIAL INSTRUCTIONS:
 If using Putty, please change your text font to be 24 or larger so the chess board is easier to see.
 
-Part of the chess pieces may look a little cut off at the end becasue the unicode chess characters are a wide, depending on your font. This happens due to the pitch of the font, and thus, fonts with larger pitch will let you see more of the piece.  
+Part of the chess pieces may look a little cut off at the end becasue the unicode chess characters are a wide, depending on your font. This happens due to the pitch of the font, and thus, fonts with larger pitch will let you see more of the piece.
+Pieces might show up the best in an Arial font.
 
-We've included a jpeg of what the board looks to us: visualBoard.JPG
+We've included a jpeg of what the board looks to us with Putty's default Courier New font: visualBoard.JPG
+
+NOTE:
 
 *********************************************************************
 DESIGN:
