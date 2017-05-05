@@ -369,7 +369,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
     //negative if out of bounds
     int retCode = Board::makeMove(start, end);
-    cout << retCode << endl;
+    // cout << retCode << endl;
     Position whitepawn;
     Position blackpawn;
     int castlingCode;
@@ -440,7 +440,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
         //determines if under check for the first time
         if (this->isCheckedPosition(ourKing) == MOVE_CHECK) {
-	//if (this->isCheckedPosition(theirKing) == MOVE_CHECK) {
+	
             checkedCode = MOVE_ERROR_CANT_EXPOSE_CHECK;
             m_pieces.at(index(start)) = m_pieces.at(index(end));
             m_pieces.at(index(end)) = captured;
