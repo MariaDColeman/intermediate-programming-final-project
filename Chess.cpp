@@ -58,6 +58,44 @@ int Pawn:: properSpaces(Position start, Position end) const{
     }
 
 
+int Pawn:: validMove(Position start, Position end,
+        const Board& board) const {
+
+      char tempDir = getDirection(start,end);
+      char tempSpaces = getSpaces(start,end);
+
+      //flip spaces if black
+      if (board.getPiece(start)->owner() != WHITE) {
+        tempSpaces = -(int)tempSpaces;
+      }
+
+      //if blocked by own piece
+      if (board.getPiece(end) != NULL) {
+        if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
+        return MOVE_ERROR_BLOCKED;
+        }
+      }
+
+      //if trying to capture
+      if (board.getPiece(end) != NULL) {
+        if ((tempDir == '/') && (tempSpaces == 1)) {
+          return SUCCESS;
+        }
+        if ((tempDir == '\\') && (tempSpaces == -1)) {
+          return SUCCESS;
+        }
+        else {
+          return MOVE_ERROR_ILLEGAL;
+        }
+      }
+
+      //check normal moves
+      return ChessPiece::validMove(start, end, board);
+}
+
+
+
+
 //king is the position of the king to be checked
 //returns movecheck if true, -99 if not in check
 int ChessGame::isCheckedPosition(Position king) {
@@ -361,7 +399,7 @@ int ChessGame::isCastling(Position start, Position end) {
     rookFinal.x = kingFinal.x + sign;
     
     //remove the king for now
-    //delete(m_pieces.at(index(start)));
+
     m_pieces.at(index(start))= NULL;
 
     //return error if king will be in check through the intermediate steps
@@ -370,23 +408,23 @@ int ChessGame::isCastling(Position start, Position end) {
       m_pieces.at(index(intermediate)) = kingInitial;
       if (isCheckedPosition(intermediate) == MOVE_CHECK) {
 	//if it is in check, undo
-	//delete(m_pieces.at(index(intermediate)));
+
 	m_pieces.at(index(intermediate)) = NULL;
 	m_pieces.at(index(start)) = kingInitial;
 	return MOVE_ERROR_CANT_CASTLE;
       }
       //remove king at intermediate and increment intermediate
-      //delete(m_pieces.at(index(intermediate)));
+
       m_pieces.at(index(intermediate)) = NULL;
       intermediate.x = intermediate.x - sign;
     } while (intermediate.x != kingFinal.x);
     
     //actually do the castling
     m_pieces.at(index(kingFinal)) = kingInitial;
-    //delete(m_pieces.at(index(start)));
+
     m_pieces.at(index(start)) = NULL;
     m_pieces.at(index(rookFinal)) =rookInitial;
-    //delete(m_pieces.at(index(rook)));
+
     m_pieces.at(index(rook)) = NULL;
 
     //check if the king will be checked in the final position
@@ -411,7 +449,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
     //negative if out of bounds
     int retCode = Board::makeMove(start, end);
-    // cout << retCode << endl;
+
     Position whitepawn;
     Position blackpawn;
     int castlingCode;
@@ -439,7 +477,7 @@ int ChessGame::makeMove(Position start, Position end) {
         if (this->isCheckedPosition(ourKing)== MOVE_CHECK) {
             //actually move the pieces
             m_pieces.at(index(end)) = m_pieces.at(index(start));
-	    //delete(m_pieces.at(index(start)));
+
             m_pieces.at(index(start)) = NULL;
 
             //if doesn't handle check, undo and return error
@@ -479,7 +517,7 @@ int ChessGame::makeMove(Position start, Position end) {
             }
             if (control) {
                 m_pieces.at(index(end)) = m_pieces.at(index(start));
-		//delete(m_pieces.at(index(start)));
+
                 m_pieces.at(index(start)) = NULL;
             }
         }
@@ -500,7 +538,7 @@ int ChessGame::makeMove(Position start, Position end) {
 
         //det captured
         if (captured != NULL) {
-	  // delete(m_pieces.at(index(end)));
+
 	  delete(captured);
 	  retCode = MOVE_CAPTURE;
         }
@@ -782,7 +820,7 @@ void ChessGame::run() {
                 nonMoveInput = 1;
             }
             if (!line.compare("forfeit")) {
-	      //cout << "check turn # later" <<endl; //
+
 		m_turn++;
 		printMoveMessages(GAME_WIN);
 		line = "q";
@@ -794,7 +832,7 @@ void ChessGame::run() {
             if (!nonMoveInput) {
 
                 std::stringstream lineReader(line);
-                //cout << "line is" << line << endl;//
+
                 lineReader >> startx;
                 lineReader >> starty;
                 lineReader >> endx;
@@ -817,8 +855,7 @@ void ChessGame::run() {
 
                 if (!nonMoveInput) {
                     moveCode = makeMove(start,end);
-		    //m_turn--;
-                    printMoveMessages(moveCode);
+		    printMoveMessages(moveCode);
                 }
             }
 
@@ -842,7 +879,6 @@ void ChessGame::run() {
     }
 
     if ((line.compare("q") != 0) && (moveCode != MOVE_STALEMATE)) {
-      //Prompts::win(this->playerTurn(), (m_turn + 1) / 2);
       printMoveMessages(GAME_WIN);
     }
 
@@ -886,8 +922,7 @@ void ChessGame::printMoveMessages(int code) {
         Prompts::staleMate();
         return;
     case GAME_WIN:
-       Prompts::win(this->playerTurn(),(this->turn()+1)/2);
-      //Prompts::win(this->playerTurn(), this->m_turn);
+        Prompts::win(this->playerTurn(),(this->turn()+1)/2);
         return;
     case GAME_OVER:
         Prompts::gameOver();

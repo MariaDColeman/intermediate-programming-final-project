@@ -76,59 +76,10 @@ public:
       return (dir == 'V');
     }
     virtual int properSpaces(Position start, Position end) const override;
-      /*
-      virtual int properSpaces(Position start, Position end) const override{
-      //first move
-      if ((m_owner == BLACK) && (start.y == 6)) {
-	return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
-      }
-      else if ((m_owner == WHITE) && (start.y == 1)) {
-	return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
-      }
-
-      //normal moves
-      if (m_owner == BLACK) {
-	return (getSpaces(start, end) == -1);
-      } else {
-	return (getSpaces(start, end) == 1);
-      }
-    }
-      */
-
+ 
     int validMove(Position start, Position end,
-        const Board& board) const override {
+		  const Board& board) const override;
 
-      char tempDir = getDirection(start,end);
-      char tempSpaces = getSpaces(start,end);
-
-      //flip spaces if black
-      if (board.getPiece(start)->owner() != WHITE) {
-	tempSpaces = -(int)tempSpaces;
-      }
-      
-      //if blocked by own piece
-      if (board.getPiece(end) != NULL) {
-        if (board.getPiece(end)->owner() == board.getPiece(start)->owner() ) {
-        return MOVE_ERROR_BLOCKED;
-	}
-      }
-
-      //if trying to capture
-      if (board.getPiece(end) != NULL) {
-        if ((tempDir == '/') && (tempSpaces == 1)) {
-          return SUCCESS;
-        }
-        if ((tempDir == '\\') && (tempSpaces == -1)) {
-          return SUCCESS;
-        }
-        else {
-          return MOVE_ERROR_ILLEGAL;
-        }
-      }
-
-      //check normal moves
-      return ChessPiece::validMove(start, end, board);
-    }
 };
 
 class Rook : public ChessPiece {
@@ -160,7 +111,6 @@ public:
     int validMove(Position start, Position end,
 		  const Board& board) const override { return ChessPiece::validMove(start, end, board); }
     virtual int properDirection(char dir) const override {
-      //cout << dir << endl;
       return (dir == 'L');
     }
     virtual int properSpaces(Position start, Position end) const override{

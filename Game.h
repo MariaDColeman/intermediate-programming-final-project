@@ -103,13 +103,6 @@ public:
 
     virtual int saveBoard(string filename);
     virtual void run(); 
-      /*
-      setupBoard();
-      struct Position a = Position(0,1);
-      struct Position b = Position(3,4);
-      makeMove(a,b);
-      printBoard();
-      */
   
 
     // Returns "true" if the game is over
