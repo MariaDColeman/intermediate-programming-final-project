@@ -75,7 +75,9 @@ public:
     virtual int properDirection(char dir) const override {
       return (dir == 'V');
     }
-    virtual int properSpaces(Position start, Position end) const override{
+    virtual int properSpaces(Position start, Position end) const override;
+      /*
+      virtual int properSpaces(Position start, Position end) const override{
       //first move
       if ((m_owner == BLACK) && (start.y == 6)) {
 	return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
@@ -91,6 +93,7 @@ public:
 	return (getSpaces(start, end) == 1);
       }
     }
+      */
 
     int validMove(Position start, Position end,
         const Board& board) const override {

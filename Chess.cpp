@@ -40,6 +40,23 @@ int ChessPiece::validMove(Position start, Position end, const Board& board) cons
   }
 }
 
+int Pawn:: properSpaces(Position start, Position end) const{
+      //first move
+      if ((m_owner == BLACK) && (start.y == 6)) {
+        return ((getSpaces(start, end) == -2) || (getSpaces(start,end) == -1));
+      }
+      else if ((m_owner == WHITE) && (start.y == 1)) {
+        return ((getSpaces(start, end) == 2) || (getSpaces(start,end) == 1));
+      }
+
+      //normal moves
+      if (m_owner == BLACK) {
+        return (getSpaces(start, end) == -1);
+      } else {
+        return (getSpaces(start, end) == 1);
+      }
+    }
+
 
 //king is the position of the king to be checked
 //returns movecheck if true, -99 if not in check
@@ -788,7 +805,7 @@ void ChessGame::run() {
                 if (!nonMoveInput) {
                     moveCode = makeMove(start,end);
 		    //m_turn--;
-                    //printMoveMessages(moveCode);
+                    printMoveMessages(moveCode);
                 }
             }
 
