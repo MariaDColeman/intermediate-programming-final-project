@@ -713,5 +713,6 @@ int main() {
     t.validMovesLonelyBlackQueen();
     t.validMovesLonelyBlackKing();
 
+    cout<<"passed all unit tests!"<<endl;
     return 0;
 }

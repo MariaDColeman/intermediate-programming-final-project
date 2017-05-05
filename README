@@ -42,11 +42,13 @@ No major errors as far as we know.
 TESTS:
 
 END TO END:
+script is test.sh. in#.txt have the user inputs
+run as ./test.sh 18
 1: case insensitive, black checkmates white aka foolsmate from wikipedia
 2: white checkmates black
 3: white checks black, checks output for forfeit, cannot parse your move 
 4: goes into a stalemate
-5: white checkmates black, also tests that pawns get upgraded to queens
+5: white checkmates black, also tests that white pawns get upgraded to queens
 6: valid castling, white does short castling and black does long castling.
 7: invalid castling/illegal move, trying to castle after the white king has moved
 8: invalid castling/illegal move, trying to castle after the white rook has moved
@@ -57,10 +59,12 @@ END TO END:
 13: invalid castling, trying to castle when king would be in check after landing
 14: invalid castling, king moves through a square attacked by an opponent
 15: black checks white
-16: captures pieces output
+16: captures pieces correctly outputs
+17: invalid start from a nonexisting file
+18: saves a state to pawn_upgrade_test_18.txt, black pawn upgrade, error messages print from off board, no piece, and blocked move
 
 UNIT TEST:
-unittest runs as ./unittest, but the file it compiles is called test_chess
+unittest runs as ./unittest, but the file it compiles is called test_chess.cpp
 It tests all the valid and invalid movement patterns for each of the piece types, including blocked pieces, capturing, etc.
 
 newGameIsNotOver asserts that a newly started, standard game is not over.
@@ -73,17 +77,15 @@ validMovesLonelyPawn asserts that pawns on their starting position can move 2 up
 validMovesLonely*** asserts that each type of piece cannot move in a way that's invalid, and can move ina way that's valid.
 
 
-
 NOTE: a bunch of positions are declared as global because we wanted to keep reusing them in the valid moves tests. We had them redeclared in each validmove test function, but wanted to make it cleaner. We tried to declare them as instance variables inside the test_chess class, but it kept giving me errors so Adrianna told us just to put it outside the class entirely. 
 
-
-
-
+*****************************************************************
+OTHER NOTES:
 
 EXTRA CREDIT: CASTLING
 I asked multiple ta's without a clear response on what classifies the player trying to make a castling move. I assume it needs to be 2 spaces towards a rook with no pieces in between and that neither has moved before. 
 
-
+To do castling, we added int member to the Pieces called hasMoved. We toggle hasMoved when the piece moved is a king or a rook, but not anything else in case mystery piece doesn't support our hasMoved member. Since the only thing we use the tag for is to check if castling is allowed, not toggling it for the other pieces doesn't matter, even if it logically make sense to do so. 
 
 
 For the printing out who wins!
