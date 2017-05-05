@@ -361,6 +361,7 @@ int ChessGame::isCastling(Position start, Position end) {
     rookFinal.x = kingFinal.x + sign;
     
     //remove the king for now
+    delete(m_pieces.at(index(start)));
     m_pieces.at(index(start))= NULL;
 
     //return error if king will be in check through the intermediate steps
@@ -369,19 +370,23 @@ int ChessGame::isCastling(Position start, Position end) {
       m_pieces.at(index(intermediate)) = kingInitial;
       if (isCheckedPosition(intermediate) == MOVE_CHECK) {
 	//if it is in check, undo
+	delete(m_pieces.at(index(intermediate)));
 	m_pieces.at(index(intermediate)) = NULL;
 	m_pieces.at(index(start)) = kingInitial;
 	return MOVE_ERROR_CANT_CASTLE;
       }
       //remove king at intermediate and increment intermediate
+      delete(m_pieces.at(index(intermediate)));
       m_pieces.at(index(intermediate)) = NULL;
       intermediate.x = intermediate.x - sign;
     } while (intermediate.x != kingFinal.x);
     
     //actually do the castling
     m_pieces.at(index(kingFinal)) = kingInitial;
+    delete(m_pieces.at(index(start)));
     m_pieces.at(index(start)) = NULL;
     m_pieces.at(index(rookFinal)) =rookInitial;
+    delete(m_pieces.at(index(rook)));
     m_pieces.at(index(rook)) = NULL;
 
     //check if the king will be checked in the final position
@@ -434,6 +439,7 @@ int ChessGame::makeMove(Position start, Position end) {
         if (this->isCheckedPosition(ourKing)== MOVE_CHECK) {
             //actually move the pieces
             m_pieces.at(index(end)) = m_pieces.at(index(start));
+	    delete(m_pieces.at(index(start)));
             m_pieces.at(index(start)) = NULL;
 
             //if doesn't handle check, undo and return error
@@ -453,22 +459,27 @@ int ChessGame::makeMove(Position start, Position end) {
                 if (((m_pieces.at(index(start))->owner())== WHITE) && (end.y == this->height() -1)) {
                     whitepawn.x = end.x;
                     whitepawn.y = height() - 1;
-                    m_pieces.at(index(end)) = NULL;
-                    initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
-                    m_pieces.at(index(start)) = NULL;
-                    control = 0;
+		    delete(m_pieces.at(index(end)));
+		    m_pieces.at(index(end)) = NULL;
+		    initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), whitepawn);
+		    delete(m_pieces.at(index(start)));
+		    m_pieces.at(index(start)) = NULL;
+		    control = 0;
                 }
                 else if (((m_pieces.at(index(start))->owner())== BLACK) && (end.y == 0)) {
                     blackpawn.x = end.x;
                     blackpawn.y = 0;
+		    delete(m_pieces.at(index(end)));
                     m_pieces.at(index(end)) = NULL;
                     initPiece(QUEEN_ENUM, m_pieces.at(index(start))->owner(), blackpawn);
+		    delete(m_pieces.at(index(start)));
                     m_pieces.at(index(start)) = NULL;
                     control = 0;
                 }
             }
             if (control) {
                 m_pieces.at(index(end)) = m_pieces.at(index(start));
+		delete(m_pieces.at(index(start)));
                 m_pieces.at(index(start)) = NULL;
             }
         }
