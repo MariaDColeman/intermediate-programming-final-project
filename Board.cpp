@@ -47,12 +47,10 @@ bool Board::initPiece(int id, Player owner, Position position) {
 
     // Fail if the position is out of bounds
     if (!validPosition(position)) {
-        Prompts::outOfBounds();
         return false;
     }
     // Fail if the position is occupied
     if (getPiece(position)) {
-        Prompts::blocked();
         return false;
     }
     m_pieces[index(position)] = piece;
@@ -92,11 +90,9 @@ Piece* Board::newPiece(int id, Player owner) {
 int Board::makeMove(Position start, Position end) {
 
     if (!(validPosition(start) && validPosition(end))) {
-        Prompts::outOfBounds();
         return -7;
     }
     else if ((m_pieces.at(index(start)) == NULL) ||(m_pieces.at(index(start))->owner() != playerTurn())) {
-        Prompts::noPiece();
         return -6;
     }
     else {
