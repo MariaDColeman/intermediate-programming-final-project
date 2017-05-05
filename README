@@ -17,25 +17,46 @@ Pieces might show up the best in an Arial font.
 
 We've included a jpeg of what the board looks to us with Putty's default Courier New font: visualBoard.JPG
 
-NOTE:
+Castling is implemented.
 
 *********************************************************************
 DESIGN:
 
+To determine which moves were valid, we made a class inbetween pieces and the chess specific pieces called ChessPieces. This class included more functions like properAloneMove and noPeopleInWay to determine if for each specific chess piece, it was a proper move based only on its movement patterns, disregarding if there are pieces in the way, and if pieces are in the way for everything except the knight.
 
+properAloneMove then called upon virtual functions that determined if the move was in the proper direction proper spaces for each piece. Also, because we had functions to get the direction and the spaces of a move, it was easy to implement which were proper for each piece. If it was not proper, we knew in what way it was not proper.
+
+To check if a move would put the opponent in check, we made a function called isCheckedPosition that takes in the position of a king, and checks if that king is in check. It would then go through all the pieces of the player whose king is not being tested, and see if there is a valid move to get to the king.
+
+To check if a move would put the opponent in checkmate, we made a function called isUnderCheckMate that takes in a player. It goes through the player's pieces, see's if a move will take the player out of check (and undos the move if it does not).
+
+Therefore, in the makeMove functions, it would check for checked, checkmate, and stalemate conditions after the move was made, but before returning success or error codes.
 
 
 *********************************************************************
 COMPLETENESS:
-
+No major errors as far as we know. 
 
 
 *********************************************************************
 TESTS:
 
+END TO END:
+1: in1 black checkmates white in 3 steps. aka foolsmate from wikipedia
+2: white checkmates black
+3: white checks black
+4: goes into a stalemate
+5: white checkmates black, also tests that pawns get upgraded to queens
+6: valid castling, white does short castling and black does long castling.
+7: invalid castling, trying to castle after the white king has moved
+8: invalid castling, trying to castle after the white rook has moved
+9: invalid castling, trying to castle when pieces are in the way
+10: must handle check, trying to move when the king is already in check
+11: can't expose king to a check
 
 
-UNITTTEST:
+
+UNIT TEST:
 unittest runs as ./unittest, but the file it compiles is called test_chess
 It tests all the valid and invalid movement patterns for each of the piece types, including blocked pieces, capturing, etc.
 
@@ -46,7 +67,7 @@ BlockedPiece asserts that you can't move your piece to a position occupied by yo
 validMovesCapturePawn asserts that pawns can move diagonally to capture something
 validMovesCaptureUsingAnythingElse asserts that you can capture using anything else (king used as ex)
 validMovesLonelyPawn asserts that pawns on their starting position can move 2 up, and anything else that is valid for normal pawns, but can't move in a way that's invalid
-validMovesLonely*** asserts similar statements for each type of piece.
+validMovesLonely*** asserts similar statements to the pawn for each type of piece.
 
 
 
